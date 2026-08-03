@@ -1,0 +1,5103 @@
+{
+  "info": {
+    "_postman_id": "19a0f087-96a5-49ae-adda-f8f8966e5032",
+    "name": "Resvor",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53485571",
+    "_collection_link": "https://go.postman.co/collection/53485571-19a0f087-96a5-49ae-adda-f8f8966e5032?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let json;\r",
+                  "\r",
+                  "try {\r",
+                  "    json = pm.response.json();\r",
+                  "} catch (err) {\r",
+                  "    console.log(\"Response is not valid JSON\");\r",
+                  "}\r",
+                  "\r",
+                  "if (json?.data?.token) {\r",
+                  "    pm.collectionVariables.set(\"AUTH_TOKEN\", json.data.token);\r",
+                  "    console.log(\"Token saved to collection:\", json.data.token);\r",
+                  "} else {\r",
+                  "    console.log(\"Token NOT found in response at data.token\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "// {\r\n//     \"email\": \"user-dev-local-2@yopmail.com\",\r\n//     // \"email\": \"david@yopmail.com\",\r\n//     \"password\": \"Test@123\",\r\n//     \"role\": \"user\"\r\n// }\r\n\r\n{\r\n    \"email\": \"lm-dev-local@yopmail.com\",\r\n    // \"email\": \"michael@yopmail.com\",\r\n    \"password\": \"Test@123\",\r\n    \"role\": \"lounge_manager\"\r\n}\r\n\r\n// {\r\n//     \"email\": \"bartender-28@yopmail.com\",\r\n//     \"password\": \"Test@123\",\r\n//     \"role\": \"bartender\"\r\n// }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/auth/login",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Resend Email Verification OTP",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"lm-dev-local-2@yopmail.com\",\r\n    // lounge_manager | user\r\n    \"role\" : \"lounge_manager\" \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/auth/email-verification-otp",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "email-verification-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"michael@yopmail.com\",\r\n    \"role\" : \"lounge_manager\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/auth/forgot",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "forgot"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify OTP To Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"abdullah-test-@yopmail.com\",\r\n    \"otp\": \"45579\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/auth/verify-otp",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "verify-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"resetToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMjE1YzMyYmMyZWRkZjE1OWMxYTEwYyIsInJvbGUiOiJsb3VuZ2VfbWFuYWdlciIsImlhdCI6MTc4MDU3MzM3MSwiZXhwIjoxNzgwNTc0MjcxfQ.eICn7ihEmSkc7GqUhTgfvNUFhjrutZTzLMX159pT1_w\",\r\n    \"password\": \"090078601\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/auth/update-password",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "update-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Set Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"password\": \"Test@123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/auth/set-password",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "set-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"password\": \"09007860\",\r\n    \"newPassword\" : \"Test@123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/auth/change-password",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get current user session",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "devicemodel",
+                "value": "IPhone 11 Pro",
+                "type": "text"
+              },
+              {
+                "key": "deviceuniqueid",
+                "value": "UUID_IPhone11Prohihiuiuhiuhiuhiuh",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/auth/me",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update FCM",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"fcmToken\": \"fcm_123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/auth/update-fcm",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "update-fcm"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/auth/logout",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Onboarding",
+      "item": [
+        {
+          "name": "Register (1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let json;\r",
+                  "\r",
+                  "try {\r",
+                  "    json = pm.response.json();\r",
+                  "} catch (err) {\r",
+                  "    console.log(\"Response is not valid JSON\");\r",
+                  "}\r",
+                  "\r",
+                  "if (json?.data?.token) {\r",
+                  "    pm.collectionVariables.set(\"AUTH_TOKEN\", json.data.token);\r",
+                  "    console.log(\"Token saved to collection: AUTH_TOKEN : \", json.data.token);\r",
+                  "} else {\r",
+                  "    console.log(\"Token NOT found in response at data.token\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "devicemodel",
+                "value": "IPhone 11 Pro",
+                "type": "text"
+              },
+              {
+                "key": "deviceuniqueid",
+                "value": "UUID_IPhone11Prohihiuiuhiuhiuhiuh",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"lm-dev-local-2@yopmail.com\",\r\n    \"password\": \"Test@123\",\r\n    \"role\": \"lounge_manager\",\r\n    \"fullName\": \"{{$randomNamePrefix}}\",\r\n    \"phoneNumber\": \"+437211322424\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/auth/onboarding/register",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "onboarding",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Email (2)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "devicemodel",
+                "value": "IPhone 11 Pro",
+                "type": "text"
+              },
+              {
+                "key": "deviceuniqueid",
+                "value": "UUID_IPhone11Prohihiuiuhiuhiuhiuh",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"otp\": \"16464\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/auth/onboarding/verify-email",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "onboarding",
+                "verify-email"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Mobile Number (4)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let json;\r",
+                  "\r",
+                  "try {\r",
+                  "    json = pm.response.json();\r",
+                  "} catch (err) {\r",
+                  "    console.log(\"Response is not valid JSON\");\r",
+                  "}\r",
+                  "\r",
+                  "if (json?.data?.token) {\r",
+                  "    pm.collectionVariables.set(\"AUTH_TOKEN\", json.data.token);\r",
+                  "    console.log(\"Token saved to collection: AUTH_TOKEN : \", json.data.token);\r",
+                  "} else {\r",
+                  "    console.log(\"Token NOT found in response at data.token\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "devicemodel",
+                "value": "IPhone 11 Pro",
+                "type": "text"
+              },
+              {
+                "key": "deviceuniqueid",
+                "value": "UUID_IPhone11Prohihiuiuhiuhiuhiuh",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"otp\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/auth/onboarding/verify-mobile-number",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "onboarding",
+                "verify-mobile-number"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Preferences (5)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let json;\r",
+                  "\r",
+                  "try {\r",
+                  "    json = pm.response.json();\r",
+                  "} catch (err) {\r",
+                  "    console.log(\"Response is not valid JSON\");\r",
+                  "}\r",
+                  "\r",
+                  "if (json?.data?.token) {\r",
+                  "    pm.collectionVariables.set(\"AUTH_TOKEN\", json.data.token);\r",
+                  "    console.log(\"Token saved to collection:\", json.data.token);\r",
+                  "} else {\r",
+                  "    console.log(\"Token NOT found in response at data.token\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "devicemodel",
+                "value": "IPhone 11 Pro",
+                "type": "text"
+              },
+              {
+                "key": "deviceuniqueid",
+                "value": "UUID_IPhone11Prohihiuiuhiuhiuhiuh",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"musicGenres\": [\"Jazz\"],\r\n    \"loungeTypes\": [\"Speakeasy\"],\r\n    \"preferredExperiences\": [\"Group Reservations\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/auth/onboarding/preferences",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "onboarding",
+                "preferences"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Lounges",
+      "item": [
+        {
+          "name": "Services And Packages",
+          "item": [
+            {
+              "name": "List Services",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/lounges/services",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "lounges",
+                    "services"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Add service",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "name",
+                      "value": "s2",
+                      "type": "text",
+                      "uuid": "b0b0f922-c8dd-4a1b-89ec-019986138950"
+                    },
+                    {
+                      "key": "price",
+                      "value": "200",
+                      "type": "text",
+                      "uuid": "cb8ce2f1-5c49-422c-b61a-0fb568d95fec"
+                    },
+                    {
+                      "key": "description",
+                      "value": "apjdjasbduasdoksa",
+                      "type": "text",
+                      "uuid": "7a1f9b1b-cfcd-4da4-9b7e-af72a51deb56"
+                    },
+                    {
+                      "key": "serviceImages",
+                      "type": "file",
+                      "uuid": "bf6219ba-7972-4563-b490-0a62ab4c5e70",
+                      "src": "/C:/Users/Abdullah-Soomro/Downloads/images - Copy (6).png"
+                    },
+                    {
+                      "key": "serviceImages",
+                      "type": "file",
+                      "uuid": "53c5150b-53a3-4ceb-869a-ccc7b70df4db",
+                      "src": "/C:/Users/Abdullah-Soomro/Downloads/images - Copy (15).png"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/lounges/services",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "lounges",
+                    "services"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update service",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "name",
+                      "value": "s22222222222222",
+                      "type": "text",
+                      "uuid": "b0b0f922-c8dd-4a1b-89ec-019986138950"
+                    },
+                    {
+                      "key": "price",
+                      "value": "0900",
+                      "type": "text",
+                      "uuid": "cb8ce2f1-5c49-422c-b61a-0fb568d95fec"
+                    },
+                    {
+                      "key": "description",
+                      "value": "description",
+                      "type": "text",
+                      "uuid": "7a1f9b1b-cfcd-4da4-9b7e-af72a51deb56"
+                    },
+                    {
+                      "key": "serviceImages",
+                      "type": "file",
+                      "uuid": "bf6219ba-7972-4563-b490-0a62ab4c5e70",
+                      "src": "/C:/Users/Abdullah-Soomro/Downloads/images - Copy (2).png"
+                    },
+                    {
+                      "key": "serviceImages",
+                      "type": "file",
+                      "uuid": "53c5150b-53a3-4ceb-869a-ccc7b70df4db",
+                      "src": "/C:/Users/Abdullah-Soomro/Downloads/images - Copy (3).png"
+                    },
+                    {
+                      "key": "deleteImages",
+                      "value": "6a4c97b327c3372ed9a4fef8",
+                      "type": "text",
+                      "uuid": "8e3a0190-5a6b-4e88-8b91-73956ef6e3f5"
+                    },
+                    {
+                      "key": "deleteImages",
+                      "value": "6a4c97d427c3372ed9a4ff01",
+                      "type": "text",
+                      "uuid": "e3f57770-6308-48e0-a009-5a4ea816c667"
+                    },
+                    {
+                      "key": "deleteImages",
+                      "value": "6a4c97d527c3372ed9a4ff03",
+                      "type": "text",
+                      "uuid": "f549145e-347d-43ec-9cb9-c034d87b3ac3"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/lounges/services/:serviceId",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "lounges",
+                    "services",
+                    ":serviceId"
+                  ],
+                  "variable": [
+                    {
+                      "key": "serviceId",
+                      "value": "6a3b6fe8ba6b7e2d10ba9fcb"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete service",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/lounges/services/:serviceId",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "lounges",
+                    "services",
+                    ":serviceId"
+                  ],
+                  "variable": [
+                    {
+                      "key": "serviceId",
+                      "value": "6a31413f1d29f2c0197370d2"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Create Lounge",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "devicemodel",
+                "value": "IPhone 11 Pro",
+                "type": "text"
+              },
+              {
+                "key": "deviceuniqueid",
+                "value": "UUID_IPhone11Prohihiuiuhiuhiuhiuh",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Lounge 2",
+                  "type": "text",
+                  "uuid": "8b73313b-ae33-4883-97aa-27de1abd926a"
+                },
+                {
+                  "key": "businessEmail",
+                  "value": "test@yopmail.com",
+                  "type": "text",
+                  "uuid": "6d8af071-be81-470b-bada-e820365cd60c"
+                },
+                {
+                  "key": "businessPhone",
+                  "value": "+447911123456",
+                  "type": "text",
+                  "uuid": "ec7e76b2-6e48-4704-b224-70d49fb96fb1"
+                },
+                {
+                  "key": "specialization",
+                  "value": "fdasdf",
+                  "type": "text",
+                  "uuid": "21c28e35-4078-4d23-947a-159eb0575c69"
+                },
+                {
+                  "key": "description",
+                  "value": "df",
+                  "type": "text",
+                  "uuid": "2191fb87-09f8-42ea-902c-8b1b7e4605ab"
+                },
+                {
+                  "key": "operatingHours[open]",
+                  "value": "10:00 AM",
+                  "type": "text",
+                  "uuid": "66b574c4-f7aa-486d-80c3-e2b4bd8400c0"
+                },
+                {
+                  "key": "operatingHours[close]",
+                  "value": "08:00 PM",
+                  "type": "text",
+                  "uuid": "5b567e5d-6f25-44c3-bb1d-288812bf26da"
+                },
+                {
+                  "key": "location[address]",
+                  "value": "asdfdsaf",
+                  "type": "text",
+                  "uuid": "c10ff86b-6ea6-4a4a-83c3-552858a71425"
+                },
+                {
+                  "key": "location[coordinates][lat]",
+                  "value": "0",
+                  "type": "text",
+                  "uuid": "d4eefa00-f11b-43d1-af6d-0f1b8d3c44d7"
+                },
+                {
+                  "key": "location[coordinates][lng]",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "e70d8f17-e0b5-4667-918d-b8fbabd4296c"
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "uuid": "8d705018-52c2-49e3-a3c9-eb70c094a781",
+                  "src": "/C:/Users/Abdullah-Soomro/Downloads/images - Copy (29).png"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "uuid": "74b73a6c-45da-4222-836a-32460792c31b",
+                  "src": "/C:/Users/Abdullah-Soomro/Downloads/images - Copy (9).png"
+                },
+                {
+                  "key": "floorPlanImage",
+                  "type": "file",
+                  "uuid": "dfa28e2e-582e-48bc-bb2f-88c968395d37",
+                  "src": "/C:/Users/Abdullah-Soomro/Downloads/images - Copy (13).png"
+                },
+                {
+                  "key": "regularTables",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "eeda07a0-b578-4f9f-af6a-9f5339ec392f"
+                },
+                {
+                  "key": "vipTables",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "4798fdce-d7da-4db8-9941-0ac634f3a6b2"
+                },
+                {
+                  "key": "tags",
+                  "value": "ABC",
+                  "type": "text",
+                  "uuid": "5fde8063-2a1e-413e-b0ee-29e34d3de8ac"
+                },
+                {
+                  "key": "tags",
+                  "value": "DEF",
+                  "type": "text",
+                  "uuid": "311da3ab-65a2-4423-8547-6eb1d91902f9"
+                },
+                {
+                  "key": "services[0][name]",
+                  "value": "Service Name",
+                  "type": "text",
+                  "uuid": "5a6d1cc1-0166-4327-b8e7-6a5b3a2f41b8"
+                },
+                {
+                  "key": "services[0][price]",
+                  "value": "200",
+                  "type": "text",
+                  "uuid": "393e242e-fc6f-44fd-979e-36619212fda4"
+                },
+                {
+                  "key": "services[0][description]",
+                  "value": "This is a serivce description.",
+                  "type": "text",
+                  "uuid": "0d8a37d4-fe9b-4e8c-a889-b3f77f24dd0f"
+                },
+                {
+                  "key": "serviceImages_0",
+                  "type": "file",
+                  "uuid": "a1b883a9-3da8-41ac-9cab-60967b5774a6",
+                  "src": "/C:/Users/Abdullah-Soomro/Downloads/images - Copy (6).png"
+                },
+                {
+                  "key": "serviceImages_0",
+                  "type": "file",
+                  "uuid": "faace677-3316-4076-8d3a-2d402e917ace",
+                  "src": "/C:/Users/Abdullah-Soomro/Downloads/images - Copy (26).png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/lounges",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "lounges"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Lounge",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "devicemodel",
+                "value": "IPhone 11 Pro",
+                "type": "text"
+              },
+              {
+                "key": "deviceuniqueid",
+                "value": "UUID_IPhone11Prohihiuiuhiuhiuhiuh",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Lounge 2",
+                  "type": "text",
+                  "uuid": "8b73313b-ae33-4883-97aa-27de1abd926a"
+                },
+                {
+                  "key": "businessEmail",
+                  "value": "test@yopmail.com",
+                  "type": "text",
+                  "uuid": "6d8af071-be81-470b-bada-e820365cd60c"
+                },
+                {
+                  "key": "businessPhone",
+                  "value": "+447911123456",
+                  "type": "text",
+                  "uuid": "ec7e76b2-6e48-4704-b224-70d49fb96fb1"
+                },
+                {
+                  "key": "specialization",
+                  "value": "new",
+                  "type": "text",
+                  "uuid": "21c28e35-4078-4d23-947a-159eb0575c69"
+                },
+                {
+                  "key": "description",
+                  "value": "df",
+                  "type": "text",
+                  "uuid": "2191fb87-09f8-42ea-902c-8b1b7e4605ab"
+                },
+                {
+                  "key": "operatingHours[open]",
+                  "value": "10:00 PM",
+                  "type": "text",
+                  "uuid": "66b574c4-f7aa-486d-80c3-e2b4bd8400c0"
+                },
+                {
+                  "key": "operatingHours[close]",
+                  "value": "08:00 PM",
+                  "type": "text",
+                  "uuid": "5b567e5d-6f25-44c3-bb1d-288812bf26da"
+                },
+                {
+                  "key": "location[address]",
+                  "value": "fsfnlsfsajf;lalfajff",
+                  "type": "text",
+                  "uuid": "c10ff86b-6ea6-4a4a-83c3-552858a71425"
+                },
+                {
+                  "key": "location[coordinates][lat]",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "d4eefa00-f11b-43d1-af6d-0f1b8d3c44d7"
+                },
+                {
+                  "key": "location[coordinates][lng]",
+                  "value": "2",
+                  "type": "text",
+                  "uuid": "e70d8f17-e0b5-4667-918d-b8fbabd4296c"
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "uuid": "8d705018-52c2-49e3-a3c9-eb70c094a781",
+                  "src": "/C:/Users/Abdullah-Soomro/Downloads/image.png"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "uuid": "74b73a6c-45da-4222-836a-32460792c31b",
+                  "src": "/C:/Users/Abdullah-Soomro/Downloads/images - Copy (9).png"
+                },
+                {
+                  "key": "floorPlanImage",
+                  "type": "file",
+                  "uuid": "dfa28e2e-582e-48bc-bb2f-88c968395d37",
+                  "src": "/C:/Users/Abdullah-Soomro/Downloads/images - Copy (13).png"
+                },
+                {
+                  "key": "regularTables",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "eeda07a0-b578-4f9f-af6a-9f5339ec392f"
+                },
+                {
+                  "key": "vipTables",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "4798fdce-d7da-4db8-9941-0ac634f3a6b2"
+                },
+                {
+                  "key": "tags",
+                  "value": "ABC",
+                  "type": "text",
+                  "uuid": "5fde8063-2a1e-413e-b0ee-29e34d3de8ac"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/lounges",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "lounges"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Lounges",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/lounges/list?name=ashdahdlsaj",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "lounges",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "ashdahdlsaj",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Preferences",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/lounges/preferences",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "lounges",
+                "preferences"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Lounge (Current)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/lounges",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "lounges"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Lounge By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/lounges/:loungeId",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "lounges",
+                ":loungeId"
+              ],
+              "variable": [
+                {
+                  "key": "loungeId",
+                  "value": "6a4e34a6423688fe8f0aab1a"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Lounge (Current)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/lounges",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "lounges"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Switch Lounge",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"loungeId\": \"6a35151fd96fba9b42c639e8\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/lounges/switch",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "lounges",
+                "switch"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Profile (3)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "devicemodel",
+                "value": "IPhone 11 Pro",
+                "type": "text"
+              },
+              {
+                "key": "deviceuniqueid",
+                "value": "UUID_IPhone11Prohihiuiuhiuhiuhiuh",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "fullName",
+                  "value": "{{$randomNamePrefix}}",
+                  "type": "text",
+                  "uuid": "2b862b96-0fc6-4b31-83a2-16ec4f823a2d"
+                },
+                {
+                  "key": "phoneNumber",
+                  "value": "+447911123456",
+                  "type": "text",
+                  "uuid": "e4c9d98d-c4c4-4095-beb5-a515a114b497"
+                },
+                {
+                  "key": "specialDates[0][occasion]",
+                  "value": "DOB",
+                  "type": "text",
+                  "uuid": "b002cc7d-4cd6-4740-b7ee-615f1e1334b1"
+                },
+                {
+                  "key": "specialDates[0][date]",
+                  "value": "1-1-2000",
+                  "type": "text",
+                  "uuid": "15d42398-0fa9-4b60-a209-7f8a42da2122"
+                },
+                {
+                  "key": "profilePicture",
+                  "type": "file",
+                  "uuid": "886ceafc-c69b-4454-94ba-b3b6756c7909",
+                  "src": "/C:/Users/Abdullah-Soomro/Downloads/images - Copy (2).png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/auth/onboarding/profile",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "onboarding",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Guestbook",
+      "item": [
+        {
+          "name": "Add Entry To Guestbook",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"loungeId\": \"6a38f19c26f8a0c87bbb2e5a\",\r\n    \"fullName\": \"My Name\",\r\n    \"email\": \"abdullah-2@yopmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/guestbook",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "guestbook"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Import Guestbook List",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "8fdc21b9-f0e8-4a8d-b49d-d6b6bdfdec68",
+                  "src": "/C:/Users/Abdullah-Soomro/Downloads/guestbook.csv"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/guestbook/import",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "guestbook",
+                "import"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export Guestbook List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/guestbook/export",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "guestbook",
+                "export"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Entry Of Guestbook",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"fullName\": \"My Name @2\",\r\n    \"email\": \"abdullah-test@yopmail.com\",\r\n    \"specialDates\": [\r\n        // {\r\n        //     \"title\": \"title\",\r\n        //     \"date\": \"1-1-2022\"\r\n        // }\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/guestbook/:entryId",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "guestbook",
+                ":entryId"
+              ],
+              "variable": [
+                {
+                  "key": "entryId",
+                  "value": "6a1fcb474bf27144cc2518dc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Guestbook Entries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/guestbook",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "guestbook"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Entry Of Guestbook",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/guestbook/:entryId",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "guestbook",
+                ":entryId"
+              ],
+              "variable": [
+                {
+                  "key": "entryId",
+                  "value": "6a1fcb474bf27144cc2518dc"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Favourite",
+      "item": [
+        {
+          "name": "Toggle Lounge Favourite",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/favorites/:loungeId",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "favorites",
+                ":loungeId"
+              ],
+              "variable": [
+                {
+                  "key": "loungeId",
+                  "value": "6a1fe8551e84dfa4611146bb"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Favourite",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/favorites",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "favorites"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "User - Create Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loungeId\": \"6a35151fd96fba9b42c639e8\",\n  \"title\": \"My Birthday Party\",\n  \"eventType\": \"birthday\",\n  \"description\": \"A fun party with friends\",\n  \"guestCount\": 50,\n  \"budget\": 1000,\n  \"preferredMusic\": \"Pop and Hip Hop\",\n  \"specialRequest\": \"Vegan catering options please.\",\n  \"startDateTime\": \"2026-07-29T20:00:00.000Z\",\n  \"endDateTime\": \"2026-07-29T22:00:00.000Z\",\n  \"servicePackageIds\": [\"6a35151fd96fba9b42c639ea\"],\n  \"guestName\" : \"TEST NAME\",\n  \"guestEmail\" : \"test@yopmail.com\",\n  \"guestPhone\" : \"090078601\"\n  }"
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/events",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "events"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Manager - Create Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"My Birthday Party\",\n  \"eventType\": \"birthday\",\n  \"description\": \"A fun party with friends\",\n  \"guestCount\": 50,\n  \"budget\": 1000,\n  \"preferredMusic\": \"Pop and Hip Hop\",\n  \"specialRequest\": \"Vegan catering options please.\",\n  \"startDateTime\": \"2026-12-02T22:00:00.000Z\",\n  \"endDateTime\": \"2026-12-02T23:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/events/manager",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "events",
+                "manager"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User - List Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/events?page=1&limit=10&status=pending&startDate=17-06-2026&endDate&sort=asc",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "events"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "pending"
+                },
+                {
+                  "key": "startDate",
+                  "value": "17-06-2026"
+                },
+                {
+                  "key": "endDate",
+                  "value": null
+                },
+                {
+                  "key": "sort",
+                  "value": "asc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Manager - List Lounge Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/events/lounge?page=1&limit=10",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "events",
+                "lounge"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "pending",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "2026-06-17",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "2027-06-17",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "desc",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Event By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/events/:eventId",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "events",
+                ":eventId"
+              ],
+              "variable": [
+                {
+                  "key": "eventId",
+                  "value": "6a216bede47dd4dc27430d81"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User - Cancel Event",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/events/:eventId/cancel",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "events",
+                ":eventId",
+                "cancel"
+              ],
+              "variable": [
+                {
+                  "key": "eventId",
+                  "value": "6a216bede47dd4dc27430d81"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Manager - Accept Event",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/events/:eventId/accept",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "events",
+                ":eventId",
+                "accept"
+              ],
+              "variable": [
+                {
+                  "key": "eventId",
+                  "value": "6a59efee0d3e5fe61fdbbb83"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Manager - Reject Event",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rejectionReason\": \"Unfortunately, the lounge is undergoing maintenance on that date.\"\n}"
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/events/:eventId/reject",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "events",
+                ":eventId",
+                "reject"
+              ],
+              "variable": [
+                {
+                  "key": "eventId",
+                  "value": "6a216e6ce47dd4dc27430d9c"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Event  By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/events/:eventId",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "events",
+                ":eventId"
+              ],
+              "variable": [
+                {
+                  "key": "eventId",
+                  "value": "6a3b797cc5206da752aca633"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "User - Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loungeId\": \"6a4e34a6423688fe8f0aab1a\",\n  \"tableIds\": [\n    \"6a4e34a7423688fe8f0aab1e\"  \n  ],\n  \"bookingDate\": \"2026-06-21T00:00:00.000Z\",\n  \"startTime\": \"2026-07-22T01:19:00.000Z\",\n  \"endTime\": \"2026-07-22T01:20:00.000Z\",\n  \"guestCount\": 8,\n  \"childrenCount\": 8,\n  \"specialRequest\": \"Window seat if possible.\",\n  \"servicePackageIds\" : [\"6a4e34a6423688fe8f0aab1c\"],\n  \"preferredSeatingArea\" : \"THIS IS A NEW KEY\"\n}"
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/bookings",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "bookings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User - List Bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/bookings?page=1&limit=10",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "bookings"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "pending",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": null,
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": null,
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": null,
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User - Check Available Tables",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/bookings/available-tables?loungeId=6a4e34a6423688fe8f0aab1a&date=2026-07-22&startTime=2026-07-22T18:08:00.000Z&endTime=2026-07-22T18:10:00.000Z",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "bookings",
+                "available-tables"
+              ],
+              "query": [
+                {
+                  "key": "loungeId",
+                  "value": "6a4e34a6423688fe8f0aab1a"
+                },
+                {
+                  "key": "date",
+                  "value": "2026-07-22"
+                },
+                {
+                  "key": "startTime",
+                  "value": "2026-07-22T18:08:00.000Z"
+                },
+                {
+                  "key": "endTime",
+                  "value": "2026-07-22T18:10:00.000Z"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Manager - List Lounge Bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/bookings/lounge?page=1&limit=10",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "bookings",
+                "lounge"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "pending",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Booking By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/bookings/:bookingId",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "bookings",
+                ":bookingId"
+              ],
+              "variable": [
+                {
+                  "key": "bookingId",
+                  "value": "6a3b9047fd08eadf7636ead5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User - Cancel Booking",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/bookings/:bookingId/cancel",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "bookings",
+                ":bookingId",
+                "cancel"
+              ],
+              "variable": [
+                {
+                  "key": "bookingId",
+                  "value": "6a2182badc4dba4e1c563d38"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Manager - Accept Booking",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/bookings/:bookingId/accept",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "bookings",
+                ":bookingId",
+                "accept"
+              ],
+              "variable": [
+                {
+                  "key": "bookingId",
+                  "value": "6a2182badc4dba4e1c563d38"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Manager - Reject Booking",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rejectionReason\": \"Table is already reserved by a VIP guest.\"\n}"
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/bookings/:bookingId/reject",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "bookings",
+                ":bookingId",
+                "reject"
+              ],
+              "variable": [
+                {
+                  "key": "bookingId",
+                  "value": "123"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Subscriptions",
+      "item": [
+        {
+          "name": "Get Plans",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loungeId\": \"6a2ba7c13cb36e2704924d95\",\n  \"tableIds\": [\n    \"6a2ba7c13cb36e2704924d9a\"  \n  ],\n  \"bookingDate\": \"2026-12-01T00:00:00.000Z\",\n  \"startTime\": \"2026-12-01T20:00:00.000Z\",\n  \"endTime\": \"2026-12-01T23:00:00.000Z\",\n  \"guestCount\": 8,\n  \"specialRequest\": \"Window seat if possible.\"\n}"
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/subscriptions/plans",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "subscriptions",
+                "plans"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retry payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loungeId\": \"6a2ba7c13cb36e2704924d95\",\n  \"tableIds\": [\n    \"6a2ba7c13cb36e2704924d9a\"  \n  ],\n  \"bookingDate\": \"2026-12-01T00:00:00.000Z\",\n  \"startTime\": \"2026-12-01T20:00:00.000Z\",\n  \"endTime\": \"2026-12-01T23:00:00.000Z\",\n  \"guestCount\": 8,\n  \"specialRequest\": \"Window seat if possible.\"\n}"
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/subscriptions/retry-payment",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "subscriptions",
+                "retry-payment"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update payment method",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentMethodId\": \"pm_1TjzysBYszj8G23VBgQfzqmw\"\n}"
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/subscriptions/update-payment-method",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "subscriptions",
+                "update-payment-method"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Subscription",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loungeId\": \"6a2ba7c13cb36e2704924d95\",\n  \"tableIds\": [\n    \"6a2ba7c13cb36e2704924d9a\"  \n  ],\n  \"bookingDate\": \"2026-12-01T00:00:00.000Z\",\n  \"startTime\": \"2026-12-01T20:00:00.000Z\",\n  \"endTime\": \"2026-12-01T23:00:00.000Z\",\n  \"guestCount\": 8,\n  \"specialRequest\": \"Window seat if possible.\"\n}"
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/subscriptions/my",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "subscriptions",
+                "my"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Purchase Subscription Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loungeId\": \"6a2ba7c13cb36e2704924d95\",\n  \"tableIds\": [\n    \"6a2ba7c13cb36e2704924d9a\"  \n  ],\n  \"bookingDate\": \"2026-12-01T00:00:00.000Z\",\n  \"startTime\": \"2026-12-01T20:00:00.000Z\",\n  \"endTime\": \"2026-12-01T23:00:00.000Z\",\n  \"guestCount\": 8,\n  \"specialRequest\": \"Window seat if possible.\"\n}"
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/subscriptions/purchase/:planId",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "subscriptions",
+                "purchase",
+                ":planId"
+              ],
+              "variable": [
+                {
+                  "key": "planId",
+                  "value": "6a350a9faee1dd4bfc9deba5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"newPlanId\": \"6a350a9faee1dd4bfc9deba4\"\n}"
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/subscriptions/change-plan",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "subscriptions",
+                "change-plan"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel subscription plan",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loungeId\": \"6a2ba7c13cb36e2704924d95\",\n  \"tableIds\": [\n    \"6a2ba7c13cb36e2704924d9a\"  \n  ],\n  \"bookingDate\": \"2026-12-01T00:00:00.000Z\",\n  \"startTime\": \"2026-12-01T20:00:00.000Z\",\n  \"endTime\": \"2026-12-01T23:00:00.000Z\",\n  \"guestCount\": 8,\n  \"specialRequest\": \"Window seat if possible.\"\n}"
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/subscriptions/cancel",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "subscriptions",
+                "cancel"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Bartenders",
+      "item": [
+        {
+          "name": "Create Bartender",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "fullName",
+                  "value": "JHON DOE 28",
+                  "type": "text",
+                  "uuid": "e1a0dd94-1fb9-49b4-8c69-f594e1458e55"
+                },
+                {
+                  "key": "email",
+                  "value": "bartender-28@yopmail.com",
+                  "type": "text",
+                  "uuid": "d276f8cd-0606-4c19-8343-8956a03d0f1f"
+                },
+                {
+                  "key": "password",
+                  "value": "Test@123",
+                  "type": "text",
+                  "uuid": "ec0642a7-58b2-4d03-bb04-10d0cdadee6e"
+                },
+                {
+                  "key": "phoneNumber",
+                  "value": "+923001234567",
+                  "type": "text",
+                  "uuid": "b0210ed2-6234-4ad6-9405-1a84d5401ea3"
+                },
+                {
+                  "key": "address",
+                  "value": "Earth",
+                  "type": "text",
+                  "uuid": "6eff1f83-4e16-4d6c-9b1d-9586c7a5f7c8"
+                },
+                {
+                  "key": "profileImage",
+                  "type": "file",
+                  "uuid": "745674eb-8546-4461-bbd5-81472c2772d9",
+                  "src": "/C:/Users/Abdullah-Soomro/Downloads/image.png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/bartenders",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "bartenders"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST {{RESVOR_BASE_URL}}/bartenders -H \"Content-Type: application/json\" -d '{\"name\": \"\", \"email\": \"\", \"phone\": \"\"}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Bartenders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/bartenders",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "bartenders"
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET {{RESVOR_BASE_URL}}/bartenders"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Bartender By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/bartenders/:id",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "bartenders",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6a4cbcc2bd72c7dfe296f7b2"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET {{RESVOR_BASE_URL}}/bartenders/:id"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Bartender",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "fullName",
+                  "value": "JHON DOE",
+                  "type": "text",
+                  "uuid": "e1a0dd94-1fb9-49b4-8c69-f594e1458e55",
+                  "disabled": true
+                },
+                {
+                  "key": "email",
+                  "value": "bartender-25@yopmail.com",
+                  "type": "text",
+                  "uuid": "d276f8cd-0606-4c19-8343-8956a03d0f1f",
+                  "disabled": true
+                },
+                {
+                  "key": "phoneNumber",
+                  "value": "+923001234666",
+                  "type": "text",
+                  "uuid": "b0210ed2-6234-4ad6-9405-1a84d5401ea3",
+                  "disabled": true
+                },
+                {
+                  "key": "address",
+                  "value": "Moon",
+                  "type": "text",
+                  "uuid": "6eff1f83-4e16-4d6c-9b1d-9586c7a5f7c8"
+                },
+                {
+                  "key": "profileImage",
+                  "type": "file",
+                  "uuid": "745674eb-8546-4461-bbd5-81472c2772d9",
+                  "src": "/C:/Users/Abdullah-Soomro/Downloads/image (1).png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/bartenders/:id",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "bartenders",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6a4ca2d6b7a6826f418e67f6"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST {{RESVOR_BASE_URL}}/bartenders -H \"Content-Type: application/json\" -d '{\"name\": \"\", \"email\": \"\", \"phone\": \"\"}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Update password (Lounge Manager)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"currentPassword\": \"Test@123\",\r\n    \"newPassword\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/bartenders/:id/update-password",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "bartenders",
+                ":id",
+                "update-password"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6a4ca2d6b7a6826f418e67f6"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST {{RESVOR_BASE_URL}}/bartenders/:id/send-credentials"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Bartender",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/bartenders/:id",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "bartenders",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6a4c919fb83fd8b14eef8e10"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X DELETE {{RESVOR_BASE_URL}}/bartenders/:id"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Shifts",
+      "item": [
+        {
+          "name": "Bartenders",
+          "item": [
+            {
+              "name": "Get My Shifts",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "disabled": false
+                  }
+                ],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/shifts/my",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "shifts",
+                    "my"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": null,
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": null,
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": null,
+                      "disabled": true
+                    },
+                    {
+                      "key": "timing",
+                      "value": null,
+                      "disabled": true
+                    },
+                    {
+                      "key": "startDate",
+                      "value": null,
+                      "disabled": true
+                    },
+                    {
+                      "key": "endDate",
+                      "value": null,
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "Generated from cURL: curl -X GET \"{{BASE_URL}}/shifts/eligible-events?page=1&limit=10\" -H \"Authorization: Bearer {{jwt_token}}\""
+              },
+              "response": []
+            },
+            {
+              "name": "Get Shift By Id",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "disabled": false
+                  }
+                ],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/shifts/my/:shiftId",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "shifts",
+                    "my",
+                    ":shiftId"
+                  ],
+                  "variable": [
+                    {
+                      "key": "shiftId",
+                      "value": "6a4cdbbb8e1076792f1a4d75"
+                    }
+                  ]
+                },
+                "description": "Generated from cURL: curl -X GET \"{{BASE_URL}}/shifts/eligible-events?page=1&limit=10\" -H \"Authorization: Bearer {{jwt_token}}\""
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Lounge Managers",
+          "item": [
+            {
+              "name": "Create Shift",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "disabled": false
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "disabled": false
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    // \"referenceType\": \"Event\",\r\n    // \"referenceId\": \"6a59efee0d3e5fe61fdbbb83\",\r\n    \"role\": \"this is a role text\",\r\n    \"startDateTime\": \"2026-08-29T23:00:00.000Z\",\r\n    \"endDateTime\": \"2026-08-29T23:59:59.000Z\",\r\n    \"status\": \"published\",\r\n    \"instructions\": \"Please arrive 15 minutes early. Uniform: black shirt, black trousers.\",\r\n    \"bartenderIds\": [\r\n        \"6a59fc392bac44fcf3aa62d7\"\r\n    ]\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/shifts",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "shifts"
+                  ]
+                },
+                "description": "Generated from cURL: curl -X POST \"{{BASE_URL}}/shifts\" -H \"Authorization: Bearer {{jwt_token}}\" -H \"Content-Type: application/json\" -d '{\"referenceType\": \"\",\"referenceId\": \"\",\"startTime\": \"\",\"endTime\": \"\",\"notes\": \"\"}'"
+              },
+              "response": []
+            },
+            {
+              "name": "List Shifts",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "disabled": false
+                  }
+                ],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/shifts",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "shifts"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "draft",
+                      "disabled": true
+                    },
+                    {
+                      "key": "referenceType",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "referenceId",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "Generated from cURL: curl -X GET \"{{BASE_URL}}/shifts?page=1&limit=10&status=&referenceType=&referenceId=\" -H \"Authorization: Bearer {{jwt_token}}\""
+              },
+              "response": []
+            },
+            {
+              "name": "Get Shift",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "disabled": false
+                  }
+                ],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/shifts/:id",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "shifts",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "6a4cdbbb8e1076792f1a4d75"
+                    }
+                  ]
+                },
+                "description": "Generated from cURL: curl -X GET \"{{BASE_URL}}/shifts/:id\" -H \"Authorization: Bearer {{jwt_token}}\""
+              },
+              "response": []
+            },
+            {
+              "name": "Get Confirmed Events And Bookings",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "disabled": false
+                  }
+                ],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/shifts/confirmed-events-and-bookings?date=2026-07-29",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "shifts",
+                    "confirmed-events-and-bookings"
+                  ],
+                  "query": [
+                    {
+                      "key": "date",
+                      "value": "2026-07-29"
+                    }
+                  ]
+                },
+                "description": "Generated from cURL: curl -X GET \"{{BASE_URL}}/shifts/:id\" -H \"Authorization: Bearer {{jwt_token}}\""
+              },
+              "response": []
+            },
+            {
+              "name": "Update Shift",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "disabled": false
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "disabled": false
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"role\": \"this is a role\",\r\n    \"status\": \"published\" // 'draft'|'published'|'cancelled'|'completed'\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/shifts/:id",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "shifts",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "6a4cde0d8e1076792f1a4da0"
+                    }
+                  ]
+                },
+                "description": "Generated from cURL: curl -X PATCH \"{{BASE_URL}}/shifts/:id\" -H \"Authorization: Bearer {{jwt_token}}\" -H \"Content-Type: application/json\" -d '{\"startTime\": \"\",\"endTime\": \"\",\"notes\": \"\",\"status\": \"\"}'"
+              },
+              "response": []
+            },
+            {
+              "name": "Assign Bartenders",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "disabled": false
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "disabled": false
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"bartenderIds\": [\r\n        \"6a59fc392bac44fcf3aa62d7\",\r\n        \"6a59fc392bac44fcf3aa62d7\"\r\n    ]\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/shifts/:id/assign-bartenders",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "shifts",
+                    ":id",
+                    "assign-bartenders"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "6a59f3cb2bac44fcf3aa62bd"
+                    }
+                  ]
+                },
+                "description": "Generated from cURL: curl -X PATCH \"{{BASE_URL}}/shifts/:id/assign-bartenders\" -H \"Authorization: Bearer {{jwt_token}}\" -H \"Content-Type: application/json\" -d '{\"bartenderIds\": []}'"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Shift",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "disabled": false
+                  }
+                ],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/shifts/:id",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "shifts",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "6a4cdbbb8e1076792f1a4d75"
+                    }
+                  ]
+                },
+                "description": "Generated from cURL: curl -X DELETE \"{{BASE_URL}}/shifts/:id\" -H \"Authorization: Bearer {{jwt_token}}\""
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shifts Requests",
+      "item": [
+        {
+          "name": "Bartenders",
+          "item": [
+            {
+              "name": "Get My Requests",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/shift-requests/my",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "shift-requests",
+                    "my"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "type",
+                      "value": "time_off",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "approved",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "Bartender only. Get the current bartender's shift requests."
+              },
+              "response": []
+            },
+            {
+              "name": "Get Swappable Shifts",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/shifts/swappable/:id",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "shifts",
+                    "swappable",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "6a59f3cb2bac44fcf3aa62bd"
+                    }
+                  ]
+                },
+                "description": "Bartender only. Get the current bartender's shift requests."
+              },
+              "response": []
+            },
+            {
+              "name": "Request Shift Swap",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "disabled": false
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"requestorShiftId\": \"6a59f3cb2bac44fcf3aa62bd\",\r\n    \"targetShiftId\": \"6a5a08787ac2254f1c06b30e\",\r\n    \"reason\": \"Personal conflict\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/shift-requests/swap",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "shift-requests",
+                    "swap"
+                  ]
+                },
+                "description": "Bartender only. Submit a shift swap request."
+              },
+              "response": []
+            },
+            {
+              "name": "Request Time Off",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "disabled": false
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"startDate\": \"2025-08-01\",\r\n    \"endDate\": \"2025-08-05\",\r\n    \"reason\": \"Family vacation\"\r\n}\r\n\r\n\r\n// Make sure time off request is handlled correctly,\r\n// Allow bartender to only add request per day",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/shift-requests/time-off",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "shift-requests",
+                    "time-off"
+                  ]
+                },
+                "description": "Bartender only. Submit a time-off request."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Lounge Manager",
+          "item": [
+            {
+              "name": "Review Request",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "disabled": false
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"status\": \"approved\",\r\n    \"reviewNote\": \"Looks good\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/shift-requests/:id/review",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "shift-requests",
+                    ":id",
+                    "review"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "6a4e520ef7d3f64557321898"
+                    }
+                  ]
+                },
+                "description": "Lounge Manager only. Approve or reject a shift request."
+              },
+              "response": []
+            },
+            {
+              "name": "Get All Requests",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/shift-requests?page=1&limit=10",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "shift-requests"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "description": "Lounge Manager only. Get all shift requests."
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Chats",
+      "item": [
+        {
+          "name": "Messages",
+          "item": [
+            {
+              "name": "List Chat Messages",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/chats/:chatId/messages",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "chats",
+                    ":chatId",
+                    "messages"
+                  ],
+                  "variable": [
+                    {
+                      "key": "chatId",
+                      "value": "6a5f065d477cc5e66d58a7c1"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Send Message",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "type",
+                      "value": "TEXT | IMAGE | DOCUMENT",
+                      "type": "text",
+                      "uuid": "47f2dc42-4ea5-4c73-a35a-7a362ad298e8"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/chats/:chatId/messages",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "chats",
+                    ":chatId",
+                    "messages"
+                  ],
+                  "variable": [
+                    {
+                      "key": "chatId",
+                      "value": "6a5f065d477cc5e66d58a7c1"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Initiate Chat",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "// // Lounge Manager\r\n// {\r\n//     \"targetId\" : \"6a3b77c9c5206da752aca5e7\" // Bartender\r\n// }\r\n\r\n\r\n// User\r\n{\r\n    \"loungeId\": \"6a3b6fe8ba6b7e2d10ba9fc9\"\r\n}\r\n\r\n\r\n// Bartender\r\n// {\r\n//     \"loungeId\": \"6a3b6fe8ba6b7e2d10ba9fc9\"\r\n// }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/chats",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "chats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Chats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/chats",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "chats"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Campaigns & Flyers",
+      "item": [
+        {
+          "name": "Create Campaign",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "channel",
+                  "value": "email",
+                  "type": "text"
+                },
+                {
+                  "key": "recipients",
+                  "value": "recipient1@yopmail.com",
+                  "type": "text"
+                },
+                {
+                  "key": "recipients",
+                  "value": "recipient1@yopmail.com",
+                  "type": "text"
+                },
+                {
+                  "key": "recipients",
+                  "value": "recipient1@yopmail.com",
+                  "type": "text"
+                },
+                {
+                  "key": "recipients",
+                  "value": "does-not-exist-123456@fail.com",
+                  "type": "text"
+                },
+                {
+                  "key": "recipients",
+                  "value": "recipient1@yopmail.com",
+                  "type": "text"
+                },
+                {
+                  "key": "additionalInfo",
+                  "value": "Join us for this event.",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [
+                    "postman-cloud:///1efedd37-c476-41f0-878c-8c53fc318852",
+                    "/C:/Users/Abdullah-Soomro/Downloads/image (3).png"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/campaigns",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "campaigns"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Saved Campaign Contacts (User Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/campaigns/contacts?channel=email&page=1&limit=10",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "campaigns",
+                "contacts"
+              ],
+              "query": [
+                {
+                  "key": "channel",
+                  "value": "email"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get campaign",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "channel",
+                  "value": "email",
+                  "type": "text"
+                },
+                {
+                  "key": "recipients[0]",
+                  "value": "recipient1@yopmail.com",
+                  "type": "text"
+                },
+                {
+                  "key": "recipients[1]",
+                  "value": "recipient2@yopmail.com",
+                  "type": "text"
+                },
+                {
+                  "key": "additionalInfo",
+                  "value": "Join us this Friday for our special Summer Party flyer presentation!",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "postman-cloud:///1efedd37-c476-41f0-878c-8c53fc318852"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/campaigns/6a43a47a465973a034168d86",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "campaigns",
+                "6a43a47a465973a034168d86"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all campaigns",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/campaigns",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "campaigns"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retry campaign",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/campaigns/6a44c8d221c7aba1581631b3/retry",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "campaigns",
+                "6a44c8d221c7aba1581631b3",
+                "retry"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Create Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "devicemodel",
+                "value": "IPhone 11 Pro",
+                "type": "text"
+              },
+              {
+                "key": "deviceuniqueid",
+                "value": "UUID_IPhone11Prohihiuiuhiuhiuhiuh",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Test Notification Title\",\r\n  \"description\": \"This is a test notification description\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/notifications",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notifications",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "devicemodel",
+                "value": "IPhone 11 Pro",
+                "type": "text"
+              },
+              {
+                "key": "deviceuniqueid",
+                "value": "UUID_IPhone11Prohihiuiuhiuhiuhiuh",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Test Notification Title\",\r\n  \"description\": \"This is a test notification description\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/notifications",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "notifications"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notification By Id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "devicemodel",
+                "value": "IPhone 11 Pro",
+                "type": "text"
+              },
+              {
+                "key": "deviceuniqueid",
+                "value": "UUID_IPhone11Prohihiuiuhiuhiuhiuh",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Test Notification Title\",\r\n  \"description\": \"This is a test notification description\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/notifications/:notificationId",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "notifications",
+                ":notificationId"
+              ],
+              "variable": [
+                {
+                  "key": "notificationId",
+                  "value": "69f345b89d77cc981eebbc16"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Notification By Id As Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "devicemodel",
+                "value": "IPhone 11 Pro",
+                "type": "text"
+              },
+              {
+                "key": "deviceuniqueid",
+                "value": "UUID_IPhone11Prohihiuiuhiuhiuhiuh",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Test Notification Title\",\r\n  \"description\": \"This is a test notification description\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/notifications/:notificationId/read",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "notifications",
+                ":notificationId",
+                "read"
+              ],
+              "variable": [
+                {
+                  "key": "notificationId",
+                  "value": "69f345b89d77cc981eebbc16"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Notification As Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "devicemodel",
+                "value": "IPhone 11 Pro",
+                "type": "text"
+              },
+              {
+                "key": "deviceuniqueid",
+                "value": "UUID_IPhone11Prohihiuiuhiuhiuhiuh",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Test Notification Title\",\r\n  \"description\": \"This is a test notification description\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/notifications/read-all",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "notifications",
+                "read-all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Notifications",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "devicemodel",
+                "value": "IPhone 11 Pro",
+                "type": "text"
+              },
+              {
+                "key": "deviceuniqueid",
+                "value": "UUID_IPhone11Prohihiuiuhiuhiuhiuh",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Test Notification Title\",\r\n  \"description\": \"This is a test notification description\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/notifications",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Notification By Id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "devicemodel",
+                "value": "IPhone 11 Pro",
+                "type": "text"
+              },
+              {
+                "key": "deviceuniqueid",
+                "value": "UUID_IPhone11Prohihiuiuhiuhiuhiuh",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Test Notification Title\",\r\n  \"description\": \"This is a test notification description\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/notifications/:notificationId",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "notifications",
+                ":notificationId"
+              ],
+              "variable": [
+                {
+                  "key": "notificationId",
+                  "value": "69f345b89d77cc981eebbc16"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Notifications",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/notifications",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/dashboard",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "dashboard"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "VIP Pass",
+      "item": [
+        {
+          "name": "Get VIP Pass",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "disabled": false
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/vip-pass/my",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "vip-pass",
+                "my"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify VIP Pass",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "disabled": false
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{RESVOR_BASE_URL}}/vip-pass/verify/:passId",
+              "host": [
+                "{{RESVOR_BASE_URL}}"
+              ],
+              "path": [
+                "vip-pass",
+                "verify",
+                ":passId"
+              ],
+              "variable": [
+                {
+                  "key": "passId",
+                  "value": "6a5de858059913b8ce9b0979"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Auth",
+          "item": [
+            {
+              "name": "Login",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const res = pm.response.json();",
+                      "if (res.success && res.data && res.data.token) {",
+                      "    pm.collectionVariables.set('adminToken', res.data.token);",
+                      "    console.log('✅ adminToken saved:', res.data.token.substring(0, 30) + '...');",
+                      "} else {",
+                      "    console.warn('⚠️  Login failed — token not saved.', JSON.stringify(res));",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"admin@resvor.com\",\n  \"password\": \"Test@123\"\n}"
+                },
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/auth/login",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Authenticate with email + password. The response JWT is automatically saved to `{{adminToken}}` via the Tests script."
+              },
+              "response": []
+            },
+            {
+              "name": "Get My Profile",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/auth/me",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "auth",
+                    "me"
+                  ]
+                },
+                "description": "Returns the currently authenticated admin's profile."
+              },
+              "response": []
+            }
+          ],
+          "description": "Admin authentication endpoints. The Login request auto-saves the JWT to {{adminToken}}."
+        },
+        {
+          "name": "Dashboard",
+          "item": [
+            {
+              "name": "Overview Counts",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/dashboard/overview",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "dashboard",
+                    "overview"
+                  ]
+                },
+                "description": "Returns aggregate counts for lounges, users, bartenders, bookings, pending bookings, and upcoming events."
+              },
+              "response": []
+            },
+            {
+              "name": "Recent Activity",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/dashboard/recent-activity",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "dashboard",
+                    "recent-activity"
+                  ]
+                },
+                "description": "Returns the last 10 user registrations, bookings, and payment transactions."
+              },
+              "response": []
+            },
+            {
+              "name": "Time-Series — Daily",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/dashboard/time-series?interval=daily",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "dashboard",
+                    "time-series"
+                  ],
+                  "query": [
+                    {
+                      "key": "interval",
+                      "value": "daily",
+                      "description": "daily | weekly | monthly"
+                    }
+                  ]
+                },
+                "description": "Booking counts and revenue grouped by interval over the last 90 days."
+              },
+              "response": []
+            },
+            {
+              "name": "Time-Series — Weekly",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/dashboard/time-series?interval=weekly",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "dashboard",
+                    "time-series"
+                  ],
+                  "query": [
+                    {
+                      "key": "interval",
+                      "value": "weekly"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Time-Series — Monthly",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/dashboard/time-series?interval=monthly",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "dashboard",
+                    "time-series"
+                  ],
+                  "query": [
+                    {
+                      "key": "interval",
+                      "value": "monthly"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "description": "Platform-wide analytics and activity feed."
+        },
+        {
+          "name": "Lounges",
+          "item": [
+            {
+              "name": "List Lounges",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/lounges?page=1&limit=10",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "lounges"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search by lounge name",
+                      "disabled": true
+                    },
+                    {
+                      "key": "includeDeleted",
+                      "value": "false",
+                      "description": "true to include soft-deleted lounges",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "Paginated list of all lounges. Supports `search` (name regex) and `includeDeleted`."
+              },
+              "response": []
+            },
+            {
+              "name": "List Lounges — with Search",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/lounges?page=1&limit=10&search=sky",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "lounges"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "search",
+                      "value": "sky"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Lounge by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/lounges/{{loungeId}}",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "lounges",
+                    "{{loungeId}}"
+                  ]
+                },
+                "description": "Returns lounge details plus its recent bookings, events, and assigned bartenders."
+              },
+              "response": []
+            }
+          ],
+          "description": "Admin lounge management."
+        },
+        {
+          "name": "Users",
+          "item": [
+            {
+              "name": "List Users",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/users?page=1&limit=10",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "users"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search firstName, lastName, email",
+                      "disabled": true
+                    },
+                    {
+                      "key": "isSuspended",
+                      "value": "false",
+                      "description": "true | false",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List Users — Suspended Only",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/users?page=1&limit=10&isSuspended=true",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "users"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "isSuspended",
+                      "value": "true"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get User by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/users/{{userId}}",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "users",
+                    "{{userId}}"
+                  ]
+                },
+                "description": "Returns user profile, booking history, wallet, and last 20 transactions."
+              },
+              "response": []
+            },
+            {
+              "name": "Suspend User",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/users/{{userId}}/suspend",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "users",
+                    "{{userId}}",
+                    "suspend"
+                  ]
+                },
+                "description": "Sets `isSuspended: true` on the user account."
+              },
+              "response": []
+            },
+            {
+              "name": "Activate User",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/users/{{userId}}/activate",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "users",
+                    "{{userId}}",
+                    "activate"
+                  ]
+                },
+                "description": "Sets `isSuspended: false` on the user account."
+              },
+              "response": []
+            }
+          ],
+          "description": "Admin user management — list, detail, suspend, activate."
+        },
+        {
+          "name": "Bartenders",
+          "item": [
+            {
+              "name": "List Bartenders",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/bartenders?page=1&limit=10",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "bartenders"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search fullName, email",
+                      "disabled": true
+                    },
+                    {
+                      "key": "loungeId",
+                      "value": "",
+                      "description": "Filter by lounge",
+                      "disabled": true
+                    },
+                    {
+                      "key": "isSuspended",
+                      "value": "false",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List Bartenders — by Lounge",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/bartenders?page=1&limit=10&loungeId={{loungeId}}",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "bartenders"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "loungeId",
+                      "value": "{{loungeId}}"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Bartender by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/bartenders/{{bartenderId}}",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "bartenders",
+                    "{{bartenderId}}"
+                  ]
+                },
+                "description": "Returns bartender profile + lounge + shifts + time-off and swap requests."
+              },
+              "response": []
+            },
+            {
+              "name": "Suspend Bartender",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/bartenders/{{bartenderId}}/suspend",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "bartenders",
+                    "{{bartenderId}}",
+                    "suspend"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Activate Bartender",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/bartenders/{{bartenderId}}/activate",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "bartenders",
+                    "{{bartenderId}}",
+                    "activate"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "description": "Admin bartender management — list, detail, suspend, activate."
+        },
+        {
+          "name": "Bookings",
+          "item": [
+            {
+              "name": "List Bookings",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/bookings?page=1&limit=10",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "bookings"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "loungeId",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "",
+                      "description": "awaiting_payment | pending | accepted | confirmed | failed | cancelled | rejected | completed",
+                      "disabled": true
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "",
+                      "description": "e.g. 2025-01-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "",
+                      "description": "e.g. 2025-12-31",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List Bookings — Pending",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/bookings?page=1&limit=10&status=pending",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "bookings"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "status",
+                      "value": "pending"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List Bookings — Date Range",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/bookings?page=1&limit=10&startDate=2025-01-01&endDate=2025-12-31",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "bookings"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "2025-01-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2025-12-31"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Booking by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/bookings/{{bookingId}}",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "bookings",
+                    "{{bookingId}}"
+                  ]
+                },
+                "description": "Full booking detail including escrow and dispute joins."
+              },
+              "response": []
+            },
+            {
+              "name": "Export Bookings (CSV)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/bookings/export",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "bookings",
+                    "export"
+                  ],
+                  "query": [
+                    {
+                      "key": "loungeId",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "Downloads a CSV file of all matching bookings. Use Postman's **Save Response → Save to a file** option to download it."
+              },
+              "response": []
+            }
+          ],
+          "description": "Admin booking management — list with filters, detail, and CSV export."
+        },
+        {
+          "name": "Events",
+          "item": [
+            {
+              "name": "List Events",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/events?page=1&limit=10",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "events"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search event title",
+                      "disabled": true
+                    },
+                    {
+                      "key": "loungeId",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "",
+                      "description": "pending | awaiting_payment | confirmed | rejected | completed | cancelled | expired | refunded",
+                      "disabled": true
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List Events — Confirmed",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/events?page=1&limit=10&status=confirmed",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "events"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "status",
+                      "value": "confirmed"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Event by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/events/{{eventId}}",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "events",
+                    "{{eventId}}"
+                  ]
+                },
+                "description": "Full event detail including escrow, withheld transaction, and disputes."
+              },
+              "response": []
+            }
+          ],
+          "description": "Admin event management — list with filters and detail."
+        },
+        {
+          "name": "Payments",
+          "item": [
+            {
+              "name": "List Transactions",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/payments?page=1&limit=10",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "payments"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "status",
+                      "value": "",
+                      "description": "IN_PROCESS | COMPLETED | FAILED | IN_TRANSIT | WITHHELD | CANCELLED",
+                      "disabled": true
+                    },
+                    {
+                      "key": "purpose",
+                      "value": "",
+                      "description": "WALLET_TOPUP | TABLE_BOOKING | EVENT_BOOKING | FLYER_CAMPAIGN | PLATFORM_FEE | BOOKING_PAYMENT | EVENT_PAYMENT | WITHDRAWAL",
+                      "disabled": true
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List Transactions — Completed",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/payments?page=1&limit=10&status=COMPLETED",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "payments"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "status",
+                      "value": "COMPLETED"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List Transactions — Booking Payments",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/payments?page=1&limit=10&purpose=BOOKING_PAYMENT",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "payments"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "purpose",
+                      "value": "BOOKING_PAYMENT"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Analytics — Daily",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/payments/analytics?interval=daily",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "payments",
+                    "analytics"
+                  ],
+                  "query": [
+                    {
+                      "key": "interval",
+                      "value": "daily",
+                      "description": "daily | weekly | monthly"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "Returns total revenue, breakdown by purpose, and time-series grouped by interval."
+              },
+              "response": []
+            },
+            {
+              "name": "Analytics — Monthly",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/payments/analytics?interval=monthly",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "payments",
+                    "analytics"
+                  ],
+                  "query": [
+                    {
+                      "key": "interval",
+                      "value": "monthly"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Export Transactions (CSV)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/payments/export",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "payments",
+                    "export"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "purpose",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "Downloads a CSV file of all matching transactions."
+              },
+              "response": []
+            },
+            {
+              "name": "Get Transaction by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/payments/{{transactionId}}",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "payments",
+                    "{{transactionId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "description": "Admin payment/transaction management — list, analytics, export, and detail."
+        },
+        {
+          "name": "Flyers",
+          "item": [
+            {
+              "name": "List Flyers",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/flyers?page=1&limit=10",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "flyers"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "channel",
+                      "value": "",
+                      "description": "email | sms",
+                      "disabled": true
+                    },
+                    {
+                      "key": "senderModel",
+                      "value": "",
+                      "description": "User | LoungeManager",
+                      "disabled": true
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "Paginated list of all campaigns. Each item includes a `recipientSummary` with PENDING/DELIVERED/FAILED counts."
+              },
+              "response": []
+            },
+            {
+              "name": "List Flyers — Email Channel",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/flyers?page=1&limit=10&channel=email",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "flyers"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "channel",
+                      "value": "email"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List Flyers — SMS Channel",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/flyers?page=1&limit=10&channel=sms",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "flyers"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "channel",
+                      "value": "sms"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Flyer Analytics",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/flyers/analytics",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "flyers",
+                    "analytics"
+                  ]
+                },
+                "description": "Returns total campaigns, total recipients, overall delivery rate, breakdown by channel, and breakdown by recipient status."
+              },
+              "response": []
+            },
+            {
+              "name": "Get Flyer by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{RESVOR_BASE_URL}}/admin/flyers/{{flyerId}}",
+                  "host": [
+                    "{{RESVOR_BASE_URL}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "flyers",
+                    "{{flyerId}}"
+                  ]
+                },
+                "description": "Full campaign detail including all recipients, sender info, channel, and sent date."
+              },
+              "response": []
+            }
+          ],
+          "description": "Admin flyer/campaign management — list with filters, analytics, and detail."
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{AUTH_TOKEN}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "AUTH_TOKEN",
+      "value": ""
+    }
+  ]
+}
