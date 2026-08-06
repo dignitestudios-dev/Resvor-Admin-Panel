@@ -2,7 +2,7 @@ import axios from 'axios';
 import { store } from '@/lib/store';
 import { logout } from '@/lib/slices/authSlice';
 
-export const BASE_URL = 'https://api-dev.resvor.com';
+export const BASE_URL = 'https://api-staging.resvor.com';
 
 // Create an Axios instance
 export const API = axios.create({
