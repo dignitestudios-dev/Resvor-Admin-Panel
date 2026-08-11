@@ -79,4 +79,5 @@ export interface BartendersListParams {
   limit?: number;
   loungeId?: string;
   search?: string;
+  isSuspended?: boolean;
 }

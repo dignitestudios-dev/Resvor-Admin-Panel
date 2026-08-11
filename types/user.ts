@@ -25,16 +25,31 @@ export interface User {
   lastName?: string;
   email: string;
   phoneNumber?: string | null;
+  role?: string;
+  userType?: 'User' | 'LoungeManager' | string;
+  isLoungeManager?: boolean;
+  loungeId?: string | { _id: string; name: string };
   isEmailVerified: boolean;
+  isPhoneNumberVerified?: boolean;
+  isProfileCompleted?: boolean;
   isSuspended: boolean;
+  isDeleted?: boolean;
   subscription?: UserSubscription;
   isSubscribed?: boolean;
   stripeCustomerId?: string | null;
   profileImage?: string;
-  profilePicture?: { _id: string } | string | null;
+  profilePicture?: {
+    _id?: string;
+    url?: string;
+    path?: string;
+    location?: string;
+    fileUrl?: string;
+    secure_url?: string;
+  } | string | null;
   preferences?: UserPreferences;
   specialDates?: UserSpecialDate[];
   onboardingStep?: string;
+  isNotificationEnabled?: boolean;
   createdAt: string;
   updatedAt?: string;
 }

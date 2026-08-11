@@ -1,13 +1,9 @@
 "use client";
 
 import {
-  CreditCard,
   EllipsisVertical,
   LogOut,
-  BellDot,
-  CircleUser,
 } from "lucide-react";
-import Link from "next/link";
 import { useDispatch } from 'react-redux';
 import { logout } from '@/lib/slices/authSlice';
 import { useRouter } from 'next/navigation';
@@ -16,7 +12,6 @@ import { Logo } from "@/components/logo";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -80,7 +75,7 @@ export function NavUser({
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <div className="h-8 w-8 rounded-lg">
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center">
                   <Logo size={28} />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -92,29 +87,8 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href="/settings/account">
-                  <CircleUser />
-                  Account
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href="/settings/billing">
-                  <CreditCard />
-                  Billing
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href="/settings/notifications">
-                  <BellDot />
-                  Notifications
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
-              <LogOut />
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive">
+              <LogOut className="mr-2 h-4 w-4" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

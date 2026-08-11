@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { StatusBadge } from '@/components/status-badge';
 
 interface DataItem {
   id: number;
@@ -79,19 +80,7 @@ export default function HeavyDataPage() {
                     <TableCell className="text-sm">{item.email}</TableCell>
                     <TableCell>${item.amount.toLocaleString()}</TableCell>
                     <TableCell>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          item.status === 'Active'
-                            ? 'bg-green-100 text-green-800'
-                            : item.status === 'Completed'
-                              ? 'bg-blue-100 text-blue-800'
-                              : item.status === 'Pending'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-gray-100 text-gray-800'
-                        }`}
-                      >
-                        {item.status}
-                      </span>
+                      <StatusBadge status={item.status} />
                     </TableCell>
                     <TableCell className="text-sm">{item.date}</TableCell>
                   </TableRow>

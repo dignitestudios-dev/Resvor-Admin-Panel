@@ -8,6 +8,7 @@ export interface FlyerSender {
   firstName?: string;
   lastName?: string;
   name?: string; // used by LoungeManager fallback
+  fullName?: string;
   email?: string;
   phoneNumber?: string;
 }
@@ -16,12 +17,23 @@ export interface FlyerLounge {
   _id: string;
   name: string;
   businessEmail?: string;
-  location?: string;
+  location?:
+    | string
+    | {
+        address?: string;
+        coordinates?: {
+          lat: number;
+          lng: number;
+        };
+      };
 }
 
 export interface FlyerImage {
-  _id: string;
-  url: string;
+  _id?: string;
+  url?: string;
+  secure_url?: string;
+  path?: string;
+  location?: string;
 }
 
 export interface FlyerRecipientSummaryItem {
@@ -45,6 +57,14 @@ export interface Flyer {
   image: FlyerImage;
   channel: FlyerChannel;
   additionalInfo?: string;
+  message?: string;
+  campaignMessage?: string;
+  description?: string;
+  content?: string;
+  text?: string;
+  body?: string;
+  caption?: string;
+  title?: string;
   recipientSummary?: FlyerRecipientSummaryItem[];
   recipients?: FlyerRecipientLog[];
   createdAt: string;

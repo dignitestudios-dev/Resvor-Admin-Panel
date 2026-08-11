@@ -237,7 +237,7 @@ export default function PaymentsPage() {
                 setPage(1);
               }}
             >
-              <SelectTrigger className="w-32 h-9">
+              <SelectTrigger className="w-36 sm:w-40 h-9">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -258,7 +258,7 @@ export default function PaymentsPage() {
                 setPage(1);
               }}
             >
-              <SelectTrigger className="w-40 h-9">
+              <SelectTrigger className="w-44 sm:w-48 h-9">
                 <SelectValue placeholder="Purpose" />
               </SelectTrigger>
               <SelectContent>

@@ -13,6 +13,7 @@ import { StatCard } from '@/components/stat-card';
 import { StatCardsSkeleton } from '@/components/table-skeleton';
 import { useDashboardOverview, useRecentActivity, useTimeSeries } from '@/hooks/use-dashboard';
 import type { TimeSeriesInterval } from '@/types/dashboard';
+import { formatChartPeriod, formatChartTooltipLabel } from '@/lib/chart-utils';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -63,6 +64,20 @@ export default function DashboardPage() {
     { value: 'weekly', label: 'Weekly' },
     { value: 'monthly', label: 'Monthly' },
   ];
+
+  const bookingChartData = React.useMemo(() => {
+    const list = timeSeries?.bookingTimeSeries ?? [];
+    if (interval === 'daily') return list.slice(-7);
+    if (interval === 'weekly') return list.slice(-12);
+    return list;
+  }, [timeSeries?.bookingTimeSeries, interval]);
+
+  const revenueChartData = React.useMemo(() => {
+    const list = timeSeries?.revenueTimeSeries ?? [];
+    if (interval === 'daily') return list.slice(-7);
+    if (interval === 'weekly') return list.slice(-12);
+    return list;
+  }, [timeSeries?.revenueTimeSeries, interval]);
 
   return (
     <div className="space-y-6">
@@ -150,14 +165,14 @@ export default function DashboardPage() {
           <CardContent>
             {chartLoading ? (
               <Skeleton className="h-48 w-full" />
-            ) : (timeSeries?.bookingTimeSeries?.length ?? 0) === 0 ? (
+            ) : bookingChartData.length === 0 ? (
               <EmptyState
                 title="No chart data"
                 description="No booking data for this period."
               />
             ) : (
               <ResponsiveContainer width="100%" height={200}>
-                <AreaChart data={timeSeries?.bookingTimeSeries ?? []}>
+                <AreaChart data={bookingChartData}>
                   <defs>
                     <linearGradient id="bookingGrad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.3} />
@@ -168,11 +183,11 @@ export default function DashboardPage() {
                   <XAxis
                     dataKey="period"
                     tick={{ fontSize: 11 }}
-                    tickFormatter={(v) => v}
+                    tickFormatter={(v) => formatChartPeriod(v, interval)}
                   />
                   <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
                   <Tooltip
-                    labelFormatter={(v) => `Period: ${v}`}
+                    labelFormatter={(v) => formatChartTooltipLabel(v, interval)}
                     formatter={(v) => [v, 'Bookings']}
                   />
                   <Area
@@ -190,30 +205,48 @@ export default function DashboardPage() {
 
         {/* Revenue Chart */}
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base">Revenue</CardTitle>
-            <CardDescription>Revenue trend over time</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
+            <div>
+              <CardTitle className="text-base">Revenue</CardTitle>
+              <CardDescription>Revenue trend over time</CardDescription>
+            </div>
+            <div className="flex gap-1">
+              {intervals.map((i) => (
+                <Button
+                  key={i.value}
+                  size="sm"
+                  variant={interval === i.value ? 'default' : 'ghost'}
+                  className="h-7 px-2 text-xs"
+                  onClick={() => setInterval(i.value)}
+                >
+                  {i.label}
+                </Button>
+              ))}
+            </div>
           </CardHeader>
           <CardContent>
             {chartLoading ? (
               <Skeleton className="h-48 w-full" />
-            ) : (timeSeries?.revenueTimeSeries?.length ?? 0) === 0 ? (
+            ) : revenueChartData.length === 0 ? (
               <EmptyState
                 title="No chart data"
                 description="No revenue data for this period."
               />
             ) : (
               <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={timeSeries?.revenueTimeSeries ?? []}>
+                <BarChart data={revenueChartData}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                   <XAxis
                     dataKey="period"
                     tick={{ fontSize: 11 }}
-                    tickFormatter={(v) => v}
+                    tickFormatter={(v) => formatChartPeriod(v, interval)}
                   />
-                  <YAxis tick={{ fontSize: 11 }} />
+                  <YAxis
+                    tick={{ fontSize: 11 }}
+                    tickFormatter={(v) => `$${(Number(v) / 100).toLocaleString()}`}
+                  />
                   <Tooltip
-                    labelFormatter={(v) => `Period: ${v}`}
+                    labelFormatter={(v) => formatChartTooltipLabel(v, interval)}
                     formatter={(v) => [`$${(Number(v) / 100).toFixed(2)}`, 'Revenue']}
                   />
                   <Bar

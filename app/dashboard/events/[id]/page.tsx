@@ -4,11 +4,13 @@ import { use } from 'react';
 import { useEvent } from '@/hooks/use-events';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, CalendarDays, Users, DollarSign } from 'lucide-react';
+import { ArrowLeft, CalendarDays, Users } from 'lucide-react';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/empty-state';
 import { StatusBadge } from '@/components/status-badge';
+
+import { formatCurrency } from '@/lib/utils';
 
 function formatDate(dateStr?: string) {
   if (!dateStr) return '—';
@@ -22,11 +24,11 @@ function formatDate(dateStr?: string) {
 
 function InfoRow({ label, value }: { label: string; value?: string | number }) {
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className="flex flex-col gap-0.5 min-w-0">
       <span className="text-xs text-muted-foreground uppercase tracking-wide">
         {label}
       </span>
-      <span className="text-sm font-medium">{value ?? '—'}</span>
+      <span className="text-sm font-medium break-words [overflow-wrap:anywhere]">{value ?? '—'}</span>
     </div>
   );
 }
@@ -94,11 +96,21 @@ export default function EventDetailPage({
             <InfoRow label="End Date/Time" value={new Date(event.endDateTime).toLocaleString()} />
             <InfoRow label="Lounge" value={event.loungeId?.name} />
             <InfoRow label="Package" value={event.servicePackageIds?.[0]?.name} />
-            <div className="col-span-2">
-              <InfoRow label="Description" value={event.description} />
+            <div className="col-span-2 min-w-0">
+              <span className="text-xs text-muted-foreground uppercase tracking-wide block mb-1 font-medium">
+                Description
+              </span>
+              <div className="text-sm font-normal bg-muted/30 p-3 rounded-lg border text-foreground break-words [overflow-wrap:anywhere] whitespace-pre-wrap leading-relaxed">
+                {event.description?.trim() || 'No description provided.'}
+              </div>
             </div>
-            <div className="col-span-2">
-              <InfoRow label="Special Request" value={event.specialRequest} />
+            <div className="col-span-2 min-w-0">
+              <span className="text-xs text-muted-foreground uppercase tracking-wide block mb-1 font-medium">
+                Special Request
+              </span>
+              <div className="text-sm font-normal bg-muted/30 p-3 rounded-lg border text-foreground break-words [overflow-wrap:anywhere] whitespace-pre-wrap leading-relaxed">
+                {event.specialRequest?.trim() || 'No special requests.'}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -123,9 +135,8 @@ export default function EventDetailPage({
                 Budget
               </span>
               <div className="flex items-center gap-1">
-                <DollarSign className="h-4 w-4 text-emerald-600" />
-                <span className="text-sm font-semibold text-lg">
-                  {event.budget?.toLocaleString() ?? '—'} {event.currency?.toUpperCase()}
+                <span className="text-base font-semibold text-emerald-600">
+                  {formatCurrency(event.budget, event.currency)}
                 </span>
               </div>
             </div>

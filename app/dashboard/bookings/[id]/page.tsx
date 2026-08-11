@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/empty-state';
 import { StatusBadge } from '@/components/status-badge';
+import { formatCurrency, cn } from '@/lib/utils';
 
 function formatDate(dateStr?: string) {
   if (!dateStr) return '—';
@@ -32,13 +33,23 @@ function formatTime(isoString?: string) {
   }
 }
 
-function InfoRow({ label, value }: { label: string; value?: string | number | null }) {
+function InfoRow({
+  label,
+  value,
+  className,
+}: {
+  label: string;
+  value?: string | number | null;
+  className?: string;
+}) {
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className={cn("flex flex-col gap-0.5 min-w-0", className)}>
       <span className="text-xs text-muted-foreground uppercase tracking-wide">
         {label}
       </span>
-      <span className="text-sm font-medium">{value ?? '—'}</span>
+      <span className="text-sm font-medium break-words [overflow-wrap:anywhere]">
+        {value ?? '—'}
+      </span>
     </div>
   );
 }
@@ -152,8 +163,13 @@ export default function BookingDetailPage({
               <InfoRow label="Time Window" value={`${formatTime(booking.startTime)} – ${formatTime(booking.endTime)}`} />
               <InfoRow label="Adult Guest Count" value={booking.guestCount} />
               <InfoRow label="Children Guest Count" value={booking.childrenCount} />
-              <div className="sm:col-span-2">
-                <InfoRow label="Special Request Note" value={booking.specialRequest} />
+              <div className="sm:col-span-2 min-w-0">
+                <span className="text-xs text-muted-foreground uppercase tracking-wide block mb-1 font-medium">
+                  Special Request Note
+                </span>
+                <div className="text-sm font-normal bg-muted/30 p-3 rounded-lg border text-foreground break-words [overflow-wrap:anywhere] whitespace-pre-wrap leading-relaxed">
+                  {booking.specialRequest?.trim() || '—'}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -197,7 +213,7 @@ export default function BookingDetailPage({
                       <div className="flex items-center justify-between">
                         <span className="font-semibold">{p.name}</span>
                         <span className="text-xs font-semibold text-emerald-600">
-                          {booking.currency?.toUpperCase()} {p.price?.toLocaleString()}
+                          {formatCurrency(p.price, booking.currency)}
                         </span>
                       </div>
                       {p.description && <p className="text-xs text-muted-foreground mt-1">{p.description}</p>}
@@ -221,9 +237,7 @@ export default function BookingDetailPage({
                   Amount Paid
                 </span>
                 <span className="text-base font-semibold text-emerald-600">
-                  {booking.amountPaid != null
-                    ? `${booking.currency?.toUpperCase()} ${booking.amountPaid.toLocaleString()}`
-                    : '—'}
+                  {formatCurrency(booking.amountPaid, booking.currency)}
                 </span>
               </div>
               <InfoRow label="Paid At Date" value={booking.paidAt ? new Date(booking.paidAt).toLocaleString() : 'Not paid'} />
@@ -232,7 +246,7 @@ export default function BookingDetailPage({
                   <span className="text-xs font-semibold text-muted-foreground block uppercase tracking-wider mb-2">Escrow Status</span>
                   <div className="grid grid-cols-2 gap-2 text-xs bg-muted/40 p-2.5 rounded border">
                     <div><span className="text-muted-foreground">Escrow ID:</span> <span className="font-mono text-xxs">{escrow._id}</span></div>
-                    <div><span className="text-muted-foreground">Status:</span> <span className="font-bold text-indigo-600">{escrow.status}</span></div>
+                    <div className="flex items-center gap-1.5"><span className="text-muted-foreground">Status:</span> <StatusBadge status={escrow.status} /></div>
                     <div><span className="text-muted-foreground">Transaction ID:</span> <span className="font-mono text-xxs truncate block max-w-40">{escrow.transactionId}</span></div>
                     <div><span className="text-muted-foreground">Release Date:</span> {escrow.releasedAt ? new Date(escrow.releasedAt).toLocaleString() : 'Not released'}</div>
                   </div>

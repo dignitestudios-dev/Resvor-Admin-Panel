@@ -15,7 +15,7 @@ import {
 import { FileImage, Users, Radio, MessageSquare, Mail, Layers } from 'lucide-react';
 import type { Flyer } from '@/types/flyer';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { stripHtml } from '@/lib/utils';
 
 function formatDate(dateStr?: string) {
   if (!dateStr) return '—';
@@ -43,17 +43,22 @@ export default function FlyersPage() {
     {
       key: 'image',
       header: 'Flyer Preview',
-      cell: (row) => (
-        <div className="relative h-14 w-10 overflow-hidden rounded border bg-muted shrink-0">
-          <Image
-            src={row.image?.url}
-            alt="Flyer campaign"
-            fill
-            className="object-cover"
-            sizes="40px"
-          />
-        </div>
-      ),
+      cell: (row) => {
+        const imgUrl = typeof row.image === 'string' ? row.image : (row.image?.url || row.image?.secure_url || row.image?.path || row.image?.location);
+        return (
+          <div className="relative h-14 w-10 overflow-hidden rounded border bg-muted shrink-0 flex items-center justify-center">
+            {imgUrl ? (
+              <img
+                src={imgUrl}
+                alt="Flyer campaign"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <FileImage className="h-4 w-4 text-muted-foreground opacity-50" />
+            )}
+          </div>
+        );
+      },
     },
     {
       key: 'sender',
@@ -118,11 +123,26 @@ export default function FlyersPage() {
     {
       key: 'additionalInfo',
       header: 'Message details',
-      cell: (row) => (
-        <span className="text-xs text-muted-foreground truncate max-w-64 block" title={row.additionalInfo}>
-          {row.additionalInfo ?? '—'}
-        </span>
-      ),
+      cell: (row) => {
+        const rawMessage =
+          row.additionalInfo ||
+          row.message ||
+          row.campaignMessage ||
+          row.description ||
+          row.content ||
+          row.text ||
+          row.body ||
+          row.caption;
+        const cleanText = stripHtml(rawMessage);
+        return (
+          <span
+            className="text-xs text-muted-foreground truncate max-w-64 block font-normal"
+            title={cleanText}
+          >
+            {cleanText}
+          </span>
+        );
+      },
     },
     {
       key: 'createdAt',

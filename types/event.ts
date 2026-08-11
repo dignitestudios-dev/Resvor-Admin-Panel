@@ -64,4 +64,7 @@ export interface EventsListParams {
   limit?: number;
   status?: EventStatus | string;
   search?: string;
+  startDate?: string;
+  endDate?: string;
+  loungeId?: string;
 }

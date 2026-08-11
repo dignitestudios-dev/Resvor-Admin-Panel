@@ -5,6 +5,7 @@ import { useBookings } from '@/hooks/use-bookings';
 import { exportBookingsCsv } from '@/lib/api/bookings.api';
 import { DataTable, Column } from '@/components/data-table';
 import { StatusBadge } from '@/components/status-badge';
+import { formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -14,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { CalendarCheck, Download, Calendar } from 'lucide-react';
+import { CalendarCheck, Download, Calendar, Eye } from 'lucide-react';
 import type { Booking } from '@/types/booking';
 import { useRouter } from 'next/navigation';
 
@@ -120,9 +121,7 @@ export default function BookingsPage() {
       header: 'Amount Paid',
       cell: (row) => (
         <span className="text-sm font-semibold">
-          {row.amountPaid != null
-            ? `${row.currency?.toUpperCase()} ${(row.amountPaid).toLocaleString()}`
-            : '—'}
+          {formatCurrency(row.amountPaid, row.currency)}
         </span>
       ),
     },
@@ -130,6 +129,24 @@ export default function BookingsPage() {
       key: 'status',
       header: 'Status',
       cell: (row) => <StatusBadge status={row.status} />,
+    },
+    {
+      key: 'actions',
+      header: '',
+      className: 'w-24 text-right',
+      cell: (row) => (
+        <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 px-2.5 text-xs gap-1.5 font-medium hover:bg-muted shadow-2xs"
+            onClick={() => router.push(`/dashboard/bookings/${row._id}`)}
+          >
+            <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+            <span>View</span>
+          </Button>
+        </div>
+      ),
     },
   ];
 

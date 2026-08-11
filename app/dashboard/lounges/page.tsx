@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useLounges } from '@/hooks/use-lounges';
 import { DataTable, Column } from '@/components/data-table';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Building2, MapPin } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Building2, MapPin, Eye } from 'lucide-react';
 import type { Lounge } from '@/types/lounge';
 import { useRouter } from 'next/navigation';
 
@@ -89,6 +90,24 @@ export default function LoungesPage() {
         <span className="text-sm text-muted-foreground">
           {formatDate(row.createdAt)}
         </span>
+      ),
+    },
+    {
+      key: 'actions',
+      header: '',
+      className: 'w-24 text-right',
+      cell: (row) => (
+        <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 px-2.5 text-xs gap-1.5 font-medium hover:bg-muted shadow-2xs"
+            onClick={() => router.push(`/dashboard/lounges/${row._id}`)}
+          >
+            <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+            <span>View</span>
+          </Button>
+        </div>
       ),
     },
   ];

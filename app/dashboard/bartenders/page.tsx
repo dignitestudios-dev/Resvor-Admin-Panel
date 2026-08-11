@@ -13,6 +13,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { MoreVertical, ShieldOff, ShieldCheck, Wine } from 'lucide-react';
 import type { Bartender } from '@/types/bartender';
 import { useRouter } from 'next/navigation';
@@ -34,6 +41,7 @@ function formatDate(dateStr?: string) {
 export default function BartendersPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [suspendedFilter, setSuspendedFilter] = useState<string>('all');
   const router = useRouter();
 
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -44,6 +52,12 @@ export default function BartendersPage() {
     page,
     limit: 10,
     search: search || undefined,
+    isSuspended:
+      suspendedFilter === 'suspended'
+        ? true
+        : suspendedFilter === 'active'
+        ? false
+        : undefined,
   });
 
   const suspendMutation = useSuspendBartender();
@@ -199,6 +213,24 @@ export default function BartendersPage() {
         onRowClick={(row) => router.push(`/dashboard/bartenders/${row._id}`)}
         emptyTitle="No bartenders found"
         emptyDescription="No bartender accounts match your current filters."
+        toolbar={
+          <Select
+            value={suspendedFilter}
+            onValueChange={(v) => {
+              setSuspendedFilter(v);
+              setPage(1);
+            }}
+          >
+            <SelectTrigger className="w-36 h-9">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="suspended">Suspended</SelectItem>
+            </SelectContent>
+          </Select>
+        }
       />
 
       <ConfirmDialog
