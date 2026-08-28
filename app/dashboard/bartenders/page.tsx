@@ -56,8 +56,8 @@ export default function BartendersPage() {
       suspendedFilter === 'suspended'
         ? true
         : suspendedFilter === 'active'
-        ? false
-        : undefined,
+          ? false
+          : undefined,
   });
 
   const suspendMutation = useSuspendBartender();
@@ -112,13 +112,13 @@ export default function BartendersPage() {
         <span className="text-sm">{row.loungeId?.name ?? '—'}</span>
       ),
     },
-    {
-      key: 'verified',
-      header: 'Verified',
-      cell: (row) => (
-        <StatusBadge status={row.isEmailVerified ? 'verified' : 'unverified'} />
-      ),
-    },
+    // {
+    //   key: 'verified',
+    //   header: 'Verified',
+    //   cell: (row) => (
+    //     <StatusBadge status={row.isEmailVerified ? 'verified' : 'unverified'} />
+    //   ),
+    // },
     {
       key: 'status',
       header: 'Status',

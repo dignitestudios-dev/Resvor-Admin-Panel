@@ -72,13 +72,13 @@ export default function LoungesPage() {
       ),
     },
     {
-      key: 'address',
+      key: 'location',
       header: 'Address',
       cell: (row) => (
         <div className="flex items-center gap-1 text-sm text-muted-foreground max-w-48 truncate">
           <MapPin className="h-3 w-3 shrink-0" />
           <span className="truncate">
-            {row?.address || '—'}
+            {row?.location?.address || '—'}
           </span>
         </div>
       ),

@@ -122,8 +122,8 @@ export default function UsersPage() {
       suspendedFilter === 'suspended'
         ? true
         : suspendedFilter === 'active'
-        ? false
-        : undefined,
+          ? false
+          : undefined,
   };
 
   const { data, isLoading, isError, error } = useUsers(params);
@@ -223,7 +223,7 @@ export default function UsersPage() {
       header: 'Subscription',
       cell: (row) => (
         <span className="text-sm capitalize">
-          {row.subscription?.plan ?? '—'}
+          {row.isSubscribed ? 'Subscribed' : 'Not Subscribed'}
         </span>
       ),
     },

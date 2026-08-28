@@ -28,10 +28,12 @@ API.interceptors.request.use(
 );
 
 // Response Interceptor — handle 401 globally
+// Skip redirect for the login endpoint itself so its own error handler can show the message
 API.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error?.response?.status === 401) {
+    const isLoginRequest = error?.config?.url?.includes('/admin/auth/login');
+    if (error?.response?.status === 401 && !isLoginRequest) {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('resvor_admin_token');
         store.dispatch(logout());
