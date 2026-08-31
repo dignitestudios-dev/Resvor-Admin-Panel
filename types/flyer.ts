@@ -34,6 +34,9 @@ export interface FlyerImage {
   secure_url?: string;
   path?: string;
   location?: string;
+  fileUrl?: string;
+  src?: string;
+  mediaUrl?: string;
 }
 
 export interface FlyerRecipientSummaryItem {
@@ -54,7 +57,7 @@ export interface Flyer {
   senderId?: FlyerSender;
   senderModel: 'User' | 'LoungeManager';
   loungeId?: FlyerLounge | null;
-  image: FlyerImage;
+  image?: FlyerImage | string | null;
   channel: FlyerChannel;
   additionalInfo?: string;
   message?: string;

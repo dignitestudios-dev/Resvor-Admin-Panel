@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CalendarDays, Eye, Calendar } from 'lucide-react';
 import type { Event } from '@/types/event';
+import { formatCurrency } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
 function formatDate(dateStr?: string) {
@@ -24,11 +25,6 @@ function formatDate(dateStr?: string) {
     day: 'numeric',
     year: 'numeric',
   });
-}
-
-function formatCurrency(amount?: number) {
-  if (amount == null) return '—';
-  return `$${amount.toLocaleString()}`;
 }
 
 export default function EventsPage() {
@@ -99,7 +95,7 @@ export default function EventsPage() {
       key: 'budget',
       header: 'Budget',
       cell: (row) => (
-        <span className="text-sm">{formatCurrency(row.budget)}</span>
+        <span className="text-sm">{formatCurrency(row.budget, row.currency)}</span>
       ),
     },
     {
@@ -130,10 +126,10 @@ export default function EventsPage() {
           <Button
             variant="outline"
             size="sm"
-            className="h-8 px-2.5 text-xs gap-1.5 font-medium hover:bg-muted shadow-2xs"
+            className="h-8 px-2.5 text-xs gap-1.5 font-medium hover:bg-muted shadow-2xs group cursor-pointer"
             onClick={() => router.push(`/dashboard/events/${row._id}`)}
           >
-            <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+            <Eye className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
             <span>View</span>
           </Button>
         </div>

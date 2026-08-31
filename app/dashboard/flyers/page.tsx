@@ -16,6 +16,11 @@ import { FileImage, Users, Radio, MessageSquare, Mail, Layers } from 'lucide-rea
 import type { Flyer } from '@/types/flyer';
 import { useRouter } from 'next/navigation';
 import { stripHtml } from '@/lib/utils';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip';
 
 function formatDate(dateStr?: string) {
   if (!dateStr) return '—';
@@ -44,17 +49,24 @@ export default function FlyersPage() {
       key: 'image',
       header: 'Flyer Preview',
       cell: (row) => {
-        const imgUrl = typeof row.image === 'string' ? row.image : (row.image?.url || row.image?.secure_url || row.image?.path || row.image?.location);
+        const rawImg = row.image;
+        const imgUrl = typeof rawImg === 'string' ? rawImg : (rawImg?.url || rawImg?.secure_url || rawImg?.path || rawImg?.location || rawImg?.fileUrl);
         return (
-          <div className="relative h-14 w-10 overflow-hidden rounded border bg-muted shrink-0 flex items-center justify-center">
+          <div className="relative h-14 w-10 overflow-hidden rounded border bg-muted/60 shrink-0 flex flex-col items-center justify-center text-center p-0.5">
             {imgUrl ? (
               <img
                 src={imgUrl}
                 alt="Flyer campaign"
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLElement).style.display = 'none';
+                }}
               />
             ) : (
-              <FileImage className="h-4 w-4 text-muted-foreground opacity-50" />
+              <div className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground/70">
+                <FileImage className="h-4 w-4" />
+                <span className="text-[8px] font-medium leading-none">No media</span>
+              </div>
             )}
           </div>
         );
@@ -74,9 +86,20 @@ export default function FlyersPage() {
           email = row.senderId?.email ?? '';
         }
         return (
-          <div>
-            <p className="font-semibold text-sm">{name}</p>
-            {email && <p className="text-xs text-muted-foreground">{email}</p>}
+          <div className="max-w-xs">
+            <p className="font-semibold text-sm truncate">{name}</p>
+            {email && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <p className="text-xs text-muted-foreground truncate cursor-default hover:text-foreground transition-colors" title={email}>
+                    {email}
+                  </p>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-xs break-all text-xs font-mono">
+                  {email}
+                </TooltipContent>
+              </Tooltip>
+            )}
             {row.senderModel === 'LoungeManager' && row.loungeId && (
               <span className="text-[10px] mt-0.5 bg-violet-100 dark:bg-violet-950/30 text-violet-700 dark:text-violet-400 font-semibold px-1.5 py-0.5 rounded block w-fit">
                 Lounge Manager

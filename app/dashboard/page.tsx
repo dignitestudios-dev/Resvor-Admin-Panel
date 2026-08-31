@@ -13,13 +13,11 @@ import { StatCard } from '@/components/stat-card';
 import { StatCardsSkeleton } from '@/components/table-skeleton';
 import { useDashboardOverview, useRecentActivity, useTimeSeries } from '@/hooks/use-dashboard';
 import type { TimeSeriesInterval } from '@/types/dashboard';
-import { formatChartPeriod, formatChartTooltipLabel } from '@/lib/chart-utils';
+import { formatChartPeriod, formatChartTooltipLabel, sortDailyTimeSeries } from '@/lib/chart-utils';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
   ResponsiveContainer,
-  AreaChart,
-  Area,
   BarChart,
   Bar,
   XAxis,
@@ -53,11 +51,13 @@ function getInitials(name?: string) {
 }
 
 export default function DashboardPage() {
-  const [interval, setInterval] = useState<TimeSeriesInterval>('daily');
+  const [bookingInterval, setBookingInterval] = useState<TimeSeriesInterval>('daily');
+  const [revenueInterval, setRevenueInterval] = useState<TimeSeriesInterval>('daily');
 
   const { data: overview, isLoading: overviewLoading } = useDashboardOverview();
   const { data: recentActivity, isLoading: activityLoading } = useRecentActivity();
-  const { data: timeSeries, isLoading: chartLoading } = useTimeSeries(interval);
+  const { data: bookingTimeSeries, isLoading: bookingChartLoading } = useTimeSeries(bookingInterval);
+  const { data: revenueTimeSeries, isLoading: revenueChartLoading } = useTimeSeries(revenueInterval);
 
   const intervals: { value: TimeSeriesInterval; label: string }[] = [
     { value: 'daily', label: 'Daily' },
@@ -66,18 +66,18 @@ export default function DashboardPage() {
   ];
 
   const bookingChartData = React.useMemo(() => {
-    const list = timeSeries?.bookingTimeSeries ?? [];
-    if (interval === 'daily') return list.slice(-7);
-    if (interval === 'weekly') return list.slice(-12);
+    const list = bookingTimeSeries?.bookingTimeSeries ?? [];
+    if (bookingInterval === 'daily') return sortDailyTimeSeries(list.slice(-7));
+    if (bookingInterval === 'weekly') return list.slice(-12);
     return list;
-  }, [timeSeries?.bookingTimeSeries, interval]);
+  }, [bookingTimeSeries?.bookingTimeSeries, bookingInterval]);
 
   const revenueChartData = React.useMemo(() => {
-    const list = timeSeries?.revenueTimeSeries ?? [];
-    if (interval === 'daily') return list.slice(-7);
-    if (interval === 'weekly') return list.slice(-12);
+    const list = revenueTimeSeries?.revenueTimeSeries ?? [];
+    if (revenueInterval === 'daily') return sortDailyTimeSeries(list.slice(-7));
+    if (revenueInterval === 'weekly') return list.slice(-12);
     return list;
-  }, [timeSeries?.revenueTimeSeries, interval]);
+  }, [revenueTimeSeries?.revenueTimeSeries, revenueInterval]);
 
   return (
     <div className="space-y-6">
@@ -153,9 +153,9 @@ export default function DashboardPage() {
                 <Button
                   key={i.value}
                   size="sm"
-                  variant={interval === i.value ? 'default' : 'ghost'}
+                  variant={bookingInterval === i.value ? 'default' : 'ghost'}
                   className="h-7 px-2 text-xs"
-                  onClick={() => setInterval(i.value)}
+                  onClick={() => setBookingInterval(i.value)}
                 >
                   {i.label}
                 </Button>
@@ -163,7 +163,7 @@ export default function DashboardPage() {
             </div>
           </CardHeader>
           <CardContent>
-            {chartLoading ? (
+            {bookingChartLoading ? (
               <Skeleton className="h-48 w-full" />
             ) : bookingChartData.length === 0 ? (
               <EmptyState
@@ -172,32 +172,24 @@ export default function DashboardPage() {
               />
             ) : (
               <ResponsiveContainer width="100%" height={200}>
-                <AreaChart data={bookingChartData}>
-                  <defs>
-                    <linearGradient id="bookingGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
+                <BarChart data={bookingChartData}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                   <XAxis
                     dataKey="period"
                     tick={{ fontSize: 11 }}
-                    tickFormatter={(v) => formatChartPeriod(v, interval)}
+                    tickFormatter={(v) => formatChartPeriod(v, bookingInterval)}
                   />
                   <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
                   <Tooltip
-                    labelFormatter={(v) => formatChartTooltipLabel(v, interval)}
+                    labelFormatter={(v) => formatChartTooltipLabel(v, bookingInterval)}
                     formatter={(v) => [v, 'Bookings']}
                   />
-                  <Area
-                    type="monotone"
+                  <Bar
                     dataKey="count"
-                    stroke="var(--color-primary)"
-                    fill="url(#bookingGrad)"
-                    strokeWidth={2}
+                    fill="var(--color-primary)"
+                    radius={[4, 4, 0, 0]}
                   />
-                </AreaChart>
+                </BarChart>
               </ResponsiveContainer>
             )}
           </CardContent>
@@ -215,9 +207,9 @@ export default function DashboardPage() {
                 <Button
                   key={i.value}
                   size="sm"
-                  variant={interval === i.value ? 'default' : 'ghost'}
+                  variant={revenueInterval === i.value ? 'default' : 'ghost'}
                   className="h-7 px-2 text-xs"
-                  onClick={() => setInterval(i.value)}
+                  onClick={() => setRevenueInterval(i.value)}
                 >
                   {i.label}
                 </Button>
@@ -225,7 +217,7 @@ export default function DashboardPage() {
             </div>
           </CardHeader>
           <CardContent>
-            {chartLoading ? (
+            {revenueChartLoading ? (
               <Skeleton className="h-48 w-full" />
             ) : revenueChartData.length === 0 ? (
               <EmptyState
@@ -239,15 +231,15 @@ export default function DashboardPage() {
                   <XAxis
                     dataKey="period"
                     tick={{ fontSize: 11 }}
-                    tickFormatter={(v) => formatChartPeriod(v, interval)}
+                    tickFormatter={(v) => formatChartPeriod(v, revenueInterval)}
                   />
                   <YAxis
                     tick={{ fontSize: 11 }}
-                    tickFormatter={(v) => `$${(Number(v) / 100).toLocaleString()}`}
+                    tickFormatter={(v) => `$${Number(v).toLocaleString()}`}
                   />
                   <Tooltip
-                    labelFormatter={(v) => formatChartTooltipLabel(v, interval)}
-                    formatter={(v) => [`$${(Number(v) / 100).toFixed(2)}`, 'Revenue']}
+                    labelFormatter={(v) => formatChartTooltipLabel(v, revenueInterval)}
+                    formatter={(v) => [`$${Number(v).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 'Revenue']}
                   />
                   <Bar
                     dataKey="totalRevenue"

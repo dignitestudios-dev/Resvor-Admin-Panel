@@ -101,10 +101,10 @@ export default function LoungesPage() {
           <Button
             variant="outline"
             size="sm"
-            className="h-8 px-2.5 text-xs gap-1.5 font-medium hover:bg-muted shadow-2xs"
+            className="h-8 px-2.5 text-xs gap-1.5 font-medium hover:bg-muted shadow-2xs group cursor-pointer"
             onClick={() => router.push(`/dashboard/lounges/${row._id}`)}
           >
-            <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+            <Eye className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
             <span>View</span>
           </Button>
         </div>

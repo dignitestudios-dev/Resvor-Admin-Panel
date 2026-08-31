@@ -92,12 +92,30 @@ export function formatChartPeriod(
   }
 
   if (interval === 'weekly') {
-    // If format is like "2026-W32" -> "W32"
-    if (/W\d+/i.test(trimmed)) {
-      const match = trimmed.match(/W\d+/i);
-      if (match) return match[0].toUpperCase();
+    // 1. Format YYYY-WW or YYYY-Www (e.g. "2026-22", "2026-W24", "2026-01")
+    const yearWeekMatch = trimmed.match(/^(\d{4})[-/]?W?(\d{1,2})$/i);
+    if (yearWeekMatch) {
+      const weekNum = parseInt(yearWeekMatch[2], 10);
+      return `Week ${weekNum}`;
     }
-    // If it's a date string (e.g., start of week)
+
+    // 2. If format is like "W32" -> "Week 32"
+    const wMatch = trimmed.match(/^W(\d+)$/i);
+    if (wMatch) {
+      return `Week ${parseInt(wMatch[1], 10)}`;
+    }
+
+    // 3. If format is already "Week 22"
+    if (/^Week\s*\d+$/i.test(trimmed)) {
+      return trimmed.replace(/^Week\s*/i, 'Week ');
+    }
+
+    // 4. If format is just a number (e.g. "22" -> "Week 22")
+    if (/^\d+$/.test(trimmed)) {
+      return `Week ${parseInt(trimmed, 10)}`;
+    }
+
+    // 5. If it's a full date string (e.g. start of week "2026-08-11")
     const isoDateMatch = trimmed.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
     if (isoDateMatch) {
       const year = parseInt(isoDateMatch[1], 10);
@@ -108,9 +126,7 @@ export function formatChartPeriod(
         return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
       }
     }
-    if (/^\d+$/.test(trimmed)) {
-      return `W${trimmed}`;
-    }
+
     return trimmed;
   }
 
@@ -171,7 +187,8 @@ export function formatChartTooltipLabel(
   }
 
   if (interval === 'weekly') {
-    return `Week: ${formatChartPeriod(trimmed, 'weekly')}`;
+    const formatted = formatChartPeriod(trimmed, 'weekly');
+    return formatted.startsWith('Week') ? formatted : `Week: ${formatted}`;
   }
 
   if (interval === 'monthly') {
@@ -186,4 +203,27 @@ export function formatChartTooltipLabel(
   }
 
   return `Period: ${trimmed}`;
+}
+
+/**
+ * Sorts daily time series points in Monday to Sunday order.
+ */
+export function sortDailyTimeSeries<T extends { period: string }>(data: T[]): T[] {
+  const weekdayOrder: Record<string, number> = {
+    mon: 0,
+    tue: 1,
+    wed: 2,
+    thu: 3,
+    fri: 4,
+    sat: 5,
+    sun: 6,
+  };
+
+  return [...data].sort((a, b) => {
+    const dayA = formatChartPeriod(a.period, 'daily').toLowerCase().slice(0, 3);
+    const dayB = formatChartPeriod(b.period, 'daily').toLowerCase().slice(0, 3);
+    const orderA = weekdayOrder[dayA] ?? 99;
+    const orderB = weekdayOrder[dayB] ?? 99;
+    return orderA - orderB;
+  });
 }

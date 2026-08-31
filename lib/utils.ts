@@ -6,12 +6,12 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(
-  amountInCents?: number | null,
+  amount?: number | null,
   currency: string = 'USD'
 ): string {
-  if (amountInCents == null) return '—';
-  const amountInDollars = Number(amountInCents) / 100;
-  if (isNaN(amountInDollars)) return '—';
+  if (amount == null) return '—';
+  const numAmount = Number(amount);
+  if (isNaN(numAmount)) return '—';
 
   try {
     const curr = currency ? currency.toUpperCase() : 'USD';
@@ -20,9 +20,9 @@ export function formatCurrency(
       currency: curr,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    }).format(amountInDollars);
+    }).format(numAmount);
   } catch {
-    return `$${amountInDollars.toFixed(2)}`;
+    return `$${numAmount.toFixed(2)}`;
   }
 }
 

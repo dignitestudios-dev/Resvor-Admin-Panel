@@ -173,31 +173,6 @@ export default function UsersPage() {
       },
     },
     {
-      key: 'userType',
-      header: 'User Type',
-      cell: (row) => {
-        const type = getUserType(row);
-        const isManager = type === 'Lounge Manager';
-        return (
-          <span
-            className={cn(
-              'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border shadow-2xs whitespace-nowrap',
-              isManager
-                ? 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-800'
-                : 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800'
-            )}
-          >
-            {isManager ? (
-              <Building2 className="h-3 w-3 text-purple-600 dark:text-purple-400" />
-            ) : (
-              <Users className="h-3 w-3 text-blue-600 dark:text-blue-400" />
-            )}
-            <span>{type}</span>
-          </span>
-        );
-      },
-    },
-    {
       key: 'phone',
       header: 'Phone',
       cell: (row) => (

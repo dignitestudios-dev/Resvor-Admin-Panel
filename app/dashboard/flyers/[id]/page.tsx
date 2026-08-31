@@ -29,6 +29,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
 function formatDate(dateStr?: string) {
@@ -52,9 +57,25 @@ function formatLocation(loc?: any): string {
 
 function getFlyerImageUrl(image?: any): string | null {
   if (!image) return null;
-  if (typeof image === 'string' && image.trim()) return image;
+  if (typeof image === 'string') {
+    const trimmed = image.trim();
+    return trimmed.length > 0 && !trimmed.includes('undefined') && !trimmed.includes('null') ? trimmed : null;
+  }
   if (typeof image === 'object') {
-    return image.url || image.secure_url || image.path || image.location || image.fileUrl || null;
+    const url =
+      image.url ||
+      image.secure_url ||
+      image.path ||
+      image.location ||
+      image.fileUrl ||
+      image.src ||
+      image.mediaUrl ||
+      image.image ||
+      null;
+    if (typeof url === 'string') {
+      const trimmed = url.trim();
+      return trimmed.length > 0 && !trimmed.includes('undefined') && !trimmed.includes('null') ? trimmed : null;
+    }
   }
   return null;
 }
@@ -66,13 +87,15 @@ function FlyerMediaPreview({ image }: { image?: any }) {
 
   if (!imageUrl) {
     return (
-      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg border bg-muted/40 flex flex-col items-center justify-center gap-2 p-6 text-center text-muted-foreground">
-        <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center border">
-          <FileImage className="h-6 w-6 opacity-50 text-muted-foreground" />
+      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl border-2 border-dashed border-border/80 bg-muted/30 flex flex-col items-center justify-center gap-3 p-6 text-center text-muted-foreground shadow-2xs">
+        <div className="h-14 w-14 rounded-full bg-background flex items-center justify-center border shadow-xs">
+          <FileImage className="h-7 w-7 text-muted-foreground/60" />
         </div>
-        <div>
-          <p className="text-xs font-semibold text-foreground/80">No Media Uploaded</p>
-          <p className="text-xxs text-muted-foreground mt-0.5">No image was attached to this campaign</p>
+        <div className="space-y-1">
+          <p className="text-sm font-semibold text-foreground">No Image Available</p>
+          <p className="text-xs text-muted-foreground max-w-[220px]">
+            No flyer media or attachment was uploaded for this campaign
+          </p>
         </div>
       </div>
     );
@@ -80,36 +103,37 @@ function FlyerMediaPreview({ image }: { image?: any }) {
 
   if (imageError) {
     return (
-      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg border border-destructive/20 bg-destructive/5 flex flex-col items-center justify-center gap-2 p-6 text-center text-destructive">
-        <div className="h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center border border-destructive/20">
-          <AlertCircle className="h-6 w-6 text-destructive" />
+      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl border border-destructive/20 bg-destructive/5 flex flex-col items-center justify-center gap-3 p-6 text-center text-destructive shadow-2xs">
+        <div className="h-14 w-14 rounded-full bg-destructive/10 flex items-center justify-center border border-destructive/20 shadow-xs">
+          <AlertCircle className="h-7 w-7 text-destructive" />
         </div>
-        <div>
-          <p className="text-xs font-semibold">Failed to Load Media</p>
-          <p className="text-xxs text-muted-foreground mt-0.5 max-w-[220px] break-all">
-            Media resource could not be loaded from remote server
+        <div className="space-y-1">
+          <p className="text-sm font-semibold text-destructive">Failed to Load Image</p>
+          <p className="text-xs text-muted-foreground max-w-[220px]">
+            The flyer image could not be loaded from the remote server
           </p>
         </div>
         <Button
           variant="outline"
           size="sm"
-          className="h-7 text-xs px-3 mt-1 shadow-2xs"
+          className="h-8 text-xs px-3 mt-1 shadow-2xs cursor-pointer hover:bg-destructive/10 hover:text-destructive border-destructive/30"
           onClick={() => {
             setImageError(false);
             setImageLoading(true);
           }}
         >
-          Retry
+          Retry Loading
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg border bg-muted/20 flex items-center justify-center group">
+    <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl border bg-muted/20 flex items-center justify-center group shadow-2xs">
       {imageLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-muted/40">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-muted/40 backdrop-blur-[1px]">
           <FileImage className="h-8 w-8 text-muted-foreground/40 animate-pulse" />
+          <span className="text-xs text-muted-foreground animate-pulse">Loading preview...</span>
         </div>
       )}
       <img
@@ -119,7 +143,10 @@ function FlyerMediaPreview({ image }: { image?: any }) {
           'w-full h-full object-contain transition-opacity duration-200',
           imageLoading ? 'opacity-0' : 'opacity-100'
         )}
-        onLoad={() => setImageLoading(false)}
+        onLoad={() => {
+          setImageLoading(false);
+          setImageError(false);
+        }}
         onError={() => {
           setImageLoading(false);
           setImageError(true);
@@ -130,9 +157,9 @@ function FlyerMediaPreview({ image }: { image?: any }) {
           href={imageUrl}
           target="_blank"
           rel="noreferrer"
-          className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 hover:bg-black text-white text-xs px-2.5 py-1 rounded-md shadow flex items-center gap-1.5"
+          className="absolute bottom-2.5 right-2.5 opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 hover:bg-black text-white text-xs px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1.5 cursor-pointer backdrop-blur-xs"
         >
-          <ExternalLink className="h-3 w-3" /> Full View
+          <ExternalLink className="h-3.5 w-3.5" /> Full View
         </a>
       )}
     </div>
@@ -154,16 +181,23 @@ function RecipientRow({ rec, index }: { rec: any; index: number }) {
     <TableRow key={index}>
       <TableCell className="text-sm font-medium py-3">
         <div className="flex items-center gap-2 max-w-sm">
-          <span
-            className="font-mono text-xs text-foreground select-all break-all leading-normal"
-            title={rec.value}
-          >
-            {rec.value}
-          </span>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span
+                className="font-mono text-xs text-foreground select-all break-all cursor-pointer hover:text-primary transition-colors"
+                title={rec.value}
+              >
+                {rec.value}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-xs break-all font-mono text-xs">
+              {rec.value}
+            </TooltipContent>
+          </Tooltip>
           <Button
             variant="ghost"
             size="sm"
-            className="h-6 w-6 p-0 opacity-60 hover:opacity-100 shrink-0 text-muted-foreground hover:bg-muted"
+            className="h-6 w-6 p-0 opacity-60 hover:opacity-100 shrink-0 text-muted-foreground hover:bg-muted cursor-pointer"
             title="Copy recipient"
             onClick={handleCopy}
           >
@@ -322,8 +356,17 @@ export default function FlyerDetailPage({
                     <div>
                       <span className="text-xs text-muted-foreground block uppercase font-medium">Business Email</span>
                       <div className="flex items-center gap-1.5 mt-1">
-                        <Mail className="h-3.5 w-3.5 text-muted-foreground" />
-                        <span className="break-all">{flyer.loungeId.businessEmail}</span>
+                        <Mail className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="break-all cursor-pointer hover:text-primary transition-colors text-foreground">
+                              {flyer.loungeId.businessEmail}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-xs break-all text-xs font-mono">
+                            {flyer.loungeId.businessEmail}
+                          </TooltipContent>
+                        </Tooltip>
                       </div>
                     </div>
                   )}
@@ -340,8 +383,17 @@ export default function FlyerDetailPage({
                     <div>
                       <span className="text-xs text-muted-foreground block uppercase font-medium">Email</span>
                       <div className="flex items-center gap-1.5 mt-1">
-                        <Mail className="h-3.5 w-3.5 text-muted-foreground" />
-                        <span className="break-all">{senderEmail}</span>
+                        <Mail className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="break-all cursor-pointer hover:text-primary transition-colors text-foreground">
+                              {senderEmail}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-xs break-all text-xs font-mono">
+                            {senderEmail}
+                          </TooltipContent>
+                        </Tooltip>
                       </div>
                     </div>
                   )}
