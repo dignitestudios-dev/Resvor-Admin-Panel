@@ -114,16 +114,16 @@ export default function LoungesPage() {
 
   const errorMsg =
     (error as { response?: { data?: { message?: string } } })?.response?.data
-      ?.message ?? 'Failed to load lounges';
+      ?.message ?? 'Failed to load promoters & lounges';
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <Building2 className="h-6 w-6" /> Lounge Management
+          <Building2 className="h-6 w-6" /> Promoters & Lounges
         </h1>
         <p className="text-muted-foreground">
-          View and manage all registered lounges
+          View and manage all registered promoters & lounges
         </p>
       </div>
 
@@ -139,11 +139,11 @@ export default function LoungesPage() {
           setSearch(v);
           setPage(1);
         }}
-        searchPlaceholder="Search lounges..."
+        searchPlaceholder="Search promoters & lounges..."
         onPageChange={setPage}
         onRowClick={(row) => router.push(`/dashboard/lounges/${row._id}`)}
-        emptyTitle="No lounges found"
-        emptyDescription="No lounges match your search criteria."
+        emptyTitle="No promoters & lounges found"
+        emptyDescription="No promoters & lounges match your search criteria."
       />
     </div>
   );

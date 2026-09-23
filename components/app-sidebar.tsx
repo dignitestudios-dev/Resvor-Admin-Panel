@@ -5,7 +5,7 @@ import {
   LayoutDashboard,
   Building2,
   Users,
-  Wine,
+  Briefcase,
   CalendarCheck,
   CalendarDays,
   CreditCard,
@@ -46,7 +46,7 @@ const data = {
       label: "Management",
       items: [
         {
-          title: "Lounges",
+          title: "Promoters & Lounges",
           url: "/dashboard/lounges",
           icon: Building2,
         },
@@ -56,9 +56,9 @@ const data = {
           icon: Users,
         },
         {
-          title: "Bartenders",
+          title: "Workforce",
           url: "/dashboard/bartenders",
-          icon: Wine,
+          icon: Briefcase,
         },
         {
           title: "Bookings",

@@ -8,7 +8,7 @@ import { ConnectionStatus } from "@/components/connection-status";
 
 export const metadata: Metadata = {
   title: "Resvor — Admin Panel",
-  description: "Resvor platform administration dashboard for managing lounges, users, bartenders, events and payments.",
+  description: "Resvor platform administration dashboard for managing promoters & lounges, users, workforce, events and payments.",
   robots: "noindex, nofollow",
 };
 

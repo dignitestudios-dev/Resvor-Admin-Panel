@@ -148,7 +148,7 @@ export default function EventsPage() {
           <CalendarDays className="h-6 w-6" /> Event Management
         </h1>
         <p className="text-muted-foreground">
-          View and manage all events across lounges
+          View and manage all events across promoters & lounges
         </p>
       </div>
 

@@ -162,7 +162,7 @@ export default function BookingsPage() {
             <CalendarCheck className="h-6 w-6" /> Booking Management
           </h1>
           <p className="text-muted-foreground">
-            Manage table bookings and reservations across lounges
+            Manage table bookings and reservations across promoters & lounges
           </p>
         </div>
         <Button

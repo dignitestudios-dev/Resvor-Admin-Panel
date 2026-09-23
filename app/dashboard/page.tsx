@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import {
   Building2,
   Users,
-  Wine,
+  Briefcase,
   CalendarCheck,
   Clock,
   CalendarDays,
@@ -95,7 +95,7 @@ export default function DashboardPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <StatCard
-            title="Total Lounges"
+            title="Total Promoters & Lounges"
             value={overview?.totalLounges}
             icon={Building2}
             iconColor="text-violet-600"
@@ -109,9 +109,9 @@ export default function DashboardPage() {
             iconBg="bg-blue-100 dark:bg-blue-900/30"
           />
           <StatCard
-            title="Bartenders"
+            title="Workforce"
             value={overview?.totalBartenders}
-            icon={Wine}
+            icon={Briefcase}
             iconColor="text-amber-600"
             iconBg="bg-amber-100 dark:bg-amber-900/30"
           />

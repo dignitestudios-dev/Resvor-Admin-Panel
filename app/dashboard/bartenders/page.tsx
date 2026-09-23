@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { MoreVertical, ShieldOff, ShieldCheck, Wine } from 'lucide-react';
+import { MoreVertical, ShieldOff, ShieldCheck, Briefcase } from 'lucide-react';
 import type { Bartender } from '@/types/bartender';
 import { useRouter } from 'next/navigation';
 
@@ -85,7 +85,7 @@ export default function BartendersPage() {
   const columns: Column<Bartender>[] = [
     {
       key: 'bartender',
-      header: 'Bartender',
+      header: 'Worker',
       cell: (row) => (
         <div className="flex items-center gap-3">
           <Avatar className="h-8 w-8">
@@ -99,6 +99,28 @@ export default function BartendersPage() {
           </div>
         </div>
       ),
+    },
+    {
+      key: 'designation',
+      header: 'Designation',
+      cell: (row) => {
+        const designation =
+          row.designation ||
+          (row as any).position ||
+          (row as any).jobTitle ||
+          (row as any).workerType ||
+          ((row as any).role && (row as any).role.toLowerCase() !== 'bartender' ? (row as any).role : undefined);
+
+        if (!designation) {
+          return <span className="text-sm text-muted-foreground">—</span>;
+        }
+
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 capitalize">
+            {designation}
+          </span>
+        );
+      },
     },
     {
       key: 'phone',
@@ -183,16 +205,16 @@ export default function BartendersPage() {
 
   const errorMsg =
     (error as { response?: { data?: { message?: string } } })?.response?.data
-      ?.message ?? 'Failed to load bartenders';
+      ?.message ?? 'Failed to load workforce';
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <Wine className="h-6 w-6" /> Bartender Management
+          <Briefcase className="h-6 w-6" /> Workforce Management
         </h1>
         <p className="text-muted-foreground">
-          Monitor and manage all bartender accounts
+          Monitor and manage all workforce accounts and designations
         </p>
       </div>
 
@@ -208,11 +230,11 @@ export default function BartendersPage() {
           setSearch(v);
           setPage(1);
         }}
-        searchPlaceholder="Search bartenders..."
+        searchPlaceholder="Search workforce..."
         onPageChange={setPage}
         onRowClick={(row) => router.push(`/dashboard/bartenders/${row._id}`)}
-        emptyTitle="No bartenders found"
-        emptyDescription="No bartender accounts match your current filters."
+        emptyTitle="No workforce found"
+        emptyDescription="No workforce accounts match your current filters."
         toolbar={
           <Select
             value={suspendedFilter}
@@ -236,7 +258,7 @@ export default function BartendersPage() {
       <ConfirmDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
-        title={action === 'suspend' ? 'Suspend Bartender' : 'Activate Bartender'}
+        title={action === 'suspend' ? 'Suspend Worker' : 'Activate Worker'}
         description={
           action === 'suspend'
             ? `Are you sure you want to suspend ${selectedBartender?.fullName}?`

@@ -4,7 +4,7 @@ import { use } from 'react';
 import { useBartender } from '@/hooks/use-bartenders';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Wine, Mail, Phone, Building2, Calendar } from 'lucide-react';
+import { ArrowLeft, Briefcase, Wine, Mail, Phone, Building2, Calendar, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/empty-state';
@@ -87,7 +87,7 @@ export default function BartenderDetailPage({
         </Button>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{bartender.fullName}</h1>
-          <p className="text-muted-foreground text-sm">Bartender Details</p>
+          <p className="text-muted-foreground text-sm">Workforce Details</p>
         </div>
       </div>
 
@@ -111,7 +111,22 @@ export default function BartenderDetailPage({
               </div>
               <div>
                 <p className="font-semibold text-base">{bartender.fullName}</p>
-                <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                {(() => {
+                  const designation =
+                    bartender.designation ||
+                    (bartender as any).position ||
+                    (bartender as any).jobTitle ||
+                    (bartender as any).workerType ||
+                    ((bartender as any).role && (bartender as any).role.toLowerCase() !== 'bartender' ? (bartender as any).role : undefined);
+                  return designation ? (
+                    <div className="mt-1">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 capitalize">
+                        {designation}
+                      </span>
+                    </div>
+                  ) : null;
+                })()}
+                <div className="flex items-center gap-1.5 mt-2 flex-wrap">
                   <StatusBadge
                     status={bartender.isSuspended ? 'suspended' : 'active'}
                   />
@@ -124,6 +139,16 @@ export default function BartenderDetailPage({
               </div>
             </div>
             <div className="space-y-3 text-sm border-t pt-4">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Briefcase className="h-4 w-4 shrink-0 text-foreground/75" />
+                <span className="capitalize">
+                  {bartender.designation ||
+                    (bartender as any).position ||
+                    (bartender as any).jobTitle ||
+                    (bartender as any).workerType ||
+                    ((bartender as any).role && (bartender as any).role.toLowerCase() !== 'bartender' ? (bartender as any).role : '—')}
+                </span>
+              </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Mail className="h-4 w-4 shrink-0 text-foreground/75" />
                 <span className="truncate">{bartender.email}</span>

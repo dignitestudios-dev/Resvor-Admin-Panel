@@ -19,6 +19,9 @@ export interface Bartender {
   email: string;
   phoneNumber?: string;
   address?: string;
+  designation?: string;
+  role?: string;
+  position?: string;
   isSuspended: boolean;
   isEmailVerified?: boolean;
   loungeId?: BartenderLounge;
