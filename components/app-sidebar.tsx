@@ -10,8 +10,7 @@ import {
   CalendarDays,
   CreditCard,
   FileImage,
-  MessageCircle,
-  Bell,
+  Layers,
 } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/logo";
@@ -25,9 +24,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
 const data = {
@@ -74,6 +70,11 @@ const data = {
           title: "Payments",
           url: "/dashboard/payments",
           icon: CreditCard,
+        },
+        {
+          title: "Plans",
+          url: "/dashboard/plans",
+          icon: Layers,
         },
       ],
     },
