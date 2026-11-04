@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 
 import {
   EllipsisVertical,
@@ -7,7 +8,16 @@ import {
 import { useDispatch } from 'react-redux';
 import { logout } from '@/lib/slices/authSlice';
 import { useRouter } from 'next/navigation';
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Logo } from "@/components/logo";
 import {
   DropdownMenu,
@@ -36,7 +46,7 @@ export function NavUser({
   const { isMobile } = useSidebar();
   const dispatch = useDispatch();
   const router = useRouter();
-
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const handleLogout = () => {
     // Clear token from localStorage
     if (typeof window !== 'undefined') {
@@ -87,13 +97,44 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive">
+            <DropdownMenuItem onClick={() => setLogoutDialogOpen(true)}
+              className="cursor-pointer text-destructive focus:text-destructive">
               <LogOut className="mr-2 h-4 w-4" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
+      <AlertDialog
+        open={logoutDialogOpen}
+        onOpenChange={setLogoutDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure you want to logout?
+            </AlertDialogTitle>
+
+            <AlertDialogDescription>
+              You will be signed out of your admin account and
+              redirected to the login page.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>
+              Cancel
+            </AlertDialogCancel>
+
+            <AlertDialogAction
+              onClick={handleLogout}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+               Logout
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </SidebarMenu>
   );
 }

@@ -41,21 +41,27 @@ export default function EventsPage() {
     statusFilter === 'accepted'
       ? 'confirmed'
       : statusFilter !== 'all'
-      ? statusFilter
-      : undefined;
+        ? statusFilter
+        : undefined;
 
   // Resolve start date based on custom picker or upcoming timeframe
+  // Resolve start date
+  const today = (() => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  })();
   const resolvedStartDate =
     startDate ||
-    (timeframeFilter === 'upcoming'
-      ? new Date().toISOString().split('T')[0]
-      : undefined);
+    (timeframeFilter === 'upcoming' ? today : undefined);
 
+  // Resolve end date
   const resolvedEndDate =
     endDate ||
-    (timeframeFilter === 'past'
-      ? new Date().toISOString()
-      : undefined);
+    (timeframeFilter === 'past' ? today : undefined);
 
   const { data, isLoading, isError, error } = useEvents({
     page,
@@ -78,6 +84,17 @@ export default function EventsPage() {
       ),
     },
     {
+      key: 'eventname',
+      header: 'Event Name',
+      cell: (row) => (
+        <div>
+          <p className="text-sm font-medium">{row.title
+            ?? '—'}</p>
+
+        </div>
+      ),
+    },
+    {
       key: 'lounge',
       header: 'Lounge',
       cell: (row) => (
@@ -88,7 +105,9 @@ export default function EventsPage() {
       key: 'package',
       header: 'Package',
       cell: (row) => (
-        <span className="text-sm">{row.servicePackageIds?.[0]?.name ?? '—'}</span>
+        <span className="text-sm whitespace-normal break-words [overflow-wrap:anywhere] max-w-[250px] block">
+          {row.servicePackageIds?.[0]?.name ?? '—'}
+        </span>
       ),
     },
     {
@@ -208,7 +227,7 @@ export default function EventsPage() {
           setSearch(v);
           setPage(1);
         }}
-        searchPlaceholder="Search events..."
+        searchPlaceholder="Search by guest name..."
         onPageChange={setPage}
         onRowClick={(row) => router.push(`/dashboard/events/${row._id}`)}
         emptyTitle="No events found"

@@ -74,11 +74,23 @@ export default function DashboardPage() {
 
   const revenueChartData = React.useMemo(() => {
     const list = revenueTimeSeries?.revenueTimeSeries ?? [];
-    if (revenueInterval === 'daily') return sortDailyTimeSeries(list.slice(-7));
-    if (revenueInterval === 'weekly') return list.slice(-12);
-    return list;
-  }, [revenueTimeSeries?.revenueTimeSeries, revenueInterval]);
 
+    // Convert cents to dollars
+    const normalizedList = list.map((item) => ({
+      ...item,
+      totalRevenue: Number(item.totalRevenue || 0) / 100,
+    }));
+
+    if (revenueInterval === 'daily') {
+      return sortDailyTimeSeries(normalizedList.slice(-7));
+    }
+
+    if (revenueInterval === 'weekly') {
+      return normalizedList.slice(-12);
+    }
+
+    return normalizedList;
+  }, [revenueTimeSeries?.revenueTimeSeries, revenueInterval]);
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -347,7 +359,11 @@ export default function DashboardPage() {
                         {ownerName}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {payment.currency?.toUpperCase()} {payment.amount?.toLocaleString()}
+                        {payment.currency?.toUpperCase()}{" "}
+                        {(Number(payment.amount || 0) / 100).toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
                       </p>
                     </div>
                     <div className="flex flex-col items-end gap-1">

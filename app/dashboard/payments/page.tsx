@@ -17,6 +17,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { CreditCard, Download, Calendar, ArrowRightLeft, ShieldCheck, Database } from 'lucide-react';
 import type { Payment } from '@/types/payment';
+import { formatCurrency } from '@/lib/utils';
 
 function formatDate(dateStr?: string) {
   if (!dateStr) return '—';
@@ -122,7 +123,7 @@ export default function PaymentsPage() {
       header: 'Amount',
       cell: (row) => (
         <span className="text-sm font-bold">
-          {row.currency?.toUpperCase()} {row.amount?.toLocaleString()}
+          {formatCurrency(Number(row.amount || 0) / 100, row.currency)}
         </span>
       ),
     },
@@ -323,7 +324,8 @@ function PaymentDetailsModal({
               <div>
                 <span className="text-xs text-muted-foreground block uppercase font-medium">Transaction Amount</span>
                 <span className="text-2xl font-bold text-foreground">
-                  {tx.currency?.toUpperCase()} {tx.amount?.toLocaleString()}
+                  {tx.currency?.toUpperCase()}{" "}
+                  {formatCurrency(Number(tx.amount || 0) / 100, tx.currency)}
                 </span>
               </div>
               <StatusBadge status={tx.status} className="text-xs" />

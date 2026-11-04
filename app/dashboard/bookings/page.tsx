@@ -121,7 +121,8 @@ export default function BookingsPage() {
       header: 'Amount Paid',
       cell: (row) => (
         <span className="text-sm font-semibold">
-          {formatCurrency(row.amountPaid, row.currency)}
+                {formatCurrency(Number(row.amountPaid || 0) / 100, row.currency)}
+
         </span>
       ),
     },
@@ -244,16 +245,20 @@ export default function BookingsPage() {
               setPage(1);
             }}
           >
-            <SelectTrigger className="w-36 h-9">
-              <SelectValue />
+            <SelectTrigger className="w-44 h-9">
+              <SelectValue placeholder="All Status" />
             </SelectTrigger>
+
             <SelectContent>
               <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="awaiting_payment">Awaiting Payment</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="accepted">Accepted</SelectItem>
+              <SelectItem value="confirmed">Confirmed</SelectItem>
+              <SelectItem value="failed">Failed</SelectItem>
+              <SelectItem value="cancelled">Cancelled</SelectItem>
               <SelectItem value="rejected">Rejected</SelectItem>
               <SelectItem value="completed">Completed</SelectItem>
-              <SelectItem value="cancelled">Cancelled</SelectItem>
             </SelectContent>
           </Select>
         }

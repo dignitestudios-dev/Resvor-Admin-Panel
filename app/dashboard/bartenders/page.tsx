@@ -87,15 +87,20 @@ export default function BartendersPage() {
       key: 'bartender',
       header: 'Worker',
       cell: (row) => (
-        <div className="flex items-center gap-3">
-          <Avatar className="h-8 w-8">
+        <div className="flex items-center gap-3 min-w-0 w-full">
+          <Avatar className="h-8 w-8 shrink-0">
             <AvatarFallback className="text-xs bg-amber-100 text-amber-700">
               {getInitials(row.fullName)}
             </AvatarFallback>
           </Avatar>
-          <div>
-            <p className="font-medium text-sm">{row.fullName}</p>
-            <p className="text-xs text-muted-foreground">{row.email}</p>
+
+          <div className="min-w-0 flex-1">
+            <p className="font-medium text-sm whitespace-normal break-all">
+              {row.fullName}
+            </p>
+            <p className="text-xs text-muted-foreground whitespace-normal break-all">
+              {row.email}
+            </p>
           </div>
         </div>
       ),
@@ -109,14 +114,17 @@ export default function BartendersPage() {
           (row as any).position ||
           (row as any).jobTitle ||
           (row as any).workerType ||
-          ((row as any).role && (row as any).role.toLowerCase() !== 'bartender' ? (row as any).role : undefined);
+          ((row as any).role &&
+            (row as any).role.toLowerCase() !== 'bartender'
+            ? (row as any).role
+            : undefined);
 
         if (!designation) {
           return <span className="text-sm text-muted-foreground">—</span>;
         }
 
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 capitalize">
+          <span className="inline-block max-w-full whitespace-normal break-all px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 capitalize">
             {designation}
           </span>
         );

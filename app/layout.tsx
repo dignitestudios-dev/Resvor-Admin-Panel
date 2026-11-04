@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: "Resvor — Admin Panel",
   description: "Resvor platform administration dashboard for managing promoters & lounges, users, workforce, events and payments.",
   robots: "noindex, nofollow",
+  icons: {
+    icon: "/images/logo.png",
+  },
 };
 
 export default function RootLayout({

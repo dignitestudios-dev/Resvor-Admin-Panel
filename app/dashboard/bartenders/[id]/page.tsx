@@ -120,7 +120,7 @@ export default function BartenderDetailPage({
                     ((bartender as any).role && (bartender as any).role.toLowerCase() !== 'bartender' ? (bartender as any).role : undefined);
                   return designation ? (
                     <div className="mt-1">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 capitalize">
+                      <span className="inline-flex break-all items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 capitalize">
                         {designation}
                       </span>
                     </div>
@@ -141,7 +141,7 @@ export default function BartenderDetailPage({
             <div className="space-y-3 text-sm border-t pt-4">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Briefcase className="h-4 w-4 shrink-0 text-foreground/75" />
-                <span className="capitalize">
+                <span className="capitalize break-all">
                   {bartender.designation ||
                     (bartender as any).position ||
                     (bartender as any).jobTitle ||
@@ -162,8 +162,8 @@ export default function BartenderDetailPage({
                 <span>{bartender.loungeId?.name ?? '—'}</span>
               </div>
               {bartender.address && (
-                <div className="flex items-start gap-2 text-muted-foreground">
-                  <Wine className="h-4 w-4 shrink-0 mt-0.5 text-foreground/75" />
+                <div className="flex items-start gap-2 text-muted-foreground break-all">
+                  <Wine className="h-4 w-4 shrink-0 mt-0.5 text-foreground/75 " />
                   <span>{bartender.address}</span>
                 </div>
               )}
@@ -206,7 +206,11 @@ export default function BartenderDetailPage({
                           <TableCell className="text-sm font-medium">
                             {formatDate(shift.startDateTime)}
                           </TableCell>
-                          <TableCell className="text-sm">{shift.role ?? '—'}</TableCell>
+                          <TableCell className="text-sm min-w-0 max-w-[180px] whitespace-normal break-all">
+                            <span className="block w-full whitespace-normal break-all">
+                              {shift.role ?? "—"}
+                            </span>
+                          </TableCell>
                           <TableCell className="text-sm">
                             {formatTime(shift.startDateTime)}
                           </TableCell>

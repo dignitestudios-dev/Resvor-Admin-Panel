@@ -237,7 +237,9 @@ export default function BookingDetailPage({
                   Amount Paid
                 </span>
                 <span className="text-base font-semibold text-emerald-600">
-                  {formatCurrency(booking.amountPaid, booking.currency)}
+                  {formatCurrency(Number(booking.amountPaid || 0) / 100, booking.currency)}
+
+
                 </span>
               </div>
               <InfoRow label="Paid At Date" value={booking.paidAt ? new Date(booking.paidAt).toLocaleString() : 'Not paid'} />

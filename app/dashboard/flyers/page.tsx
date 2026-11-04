@@ -35,10 +35,11 @@ export default function FlyersPage() {
   const [page, setPage] = useState(1);
   const [channelFilter, setChannelFilter] = useState('all');
   const router = useRouter();
-
+  const [search, setSearch] = useState('');
   const { data, isLoading, isError, error } = useFlyers({
     page,
     limit: 10,
+    search: search || undefined,
     channel: channelFilter !== 'all' ? (channelFilter as 'email' | 'sms') : undefined,
   });
 
@@ -228,8 +229,13 @@ export default function FlyersPage() {
         isLoading={isLoading}
         isError={isError}
         errorMessage={errorMsg}
-        searchValue=""
-        onSearchChange={() => {}}
+        searchValue={search}
+        onSearchChange={(value) => {
+          setSearch(value);
+          setPage(1);
+        }}
+        searchPlaceholder="Search flyer campaigns..."
+        onPageChange={setPage}
         onRowClick={(row) => router.push(`/dashboard/flyers/${row._id}`)}
         emptyTitle="No campaigns found"
         emptyDescription="No flyer campaigns match your current filters."

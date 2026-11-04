@@ -49,6 +49,16 @@ export interface LoungeDetail extends Lounge {
     email: string;
     status?: string;
   }>;
+  logo?: {
+    _id?: string;
+    url?: string;
+    secure_url?: string;
+    path?: string;
+    imageUrl?: string;
+  } | string | null;
+
+  role?: string;
+  specialization?: string;
   bookings?: Array<{
     _id: string;
     status: string;

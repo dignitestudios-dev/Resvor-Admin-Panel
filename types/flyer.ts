@@ -18,14 +18,14 @@ export interface FlyerLounge {
   name: string;
   businessEmail?: string;
   location?:
-    | string
-    | {
-        address?: string;
-        coordinates?: {
-          lat: number;
-          lng: number;
-        };
-      };
+  | string
+  | {
+    address?: string;
+    coordinates?: {
+      lat: number;
+      lng: number;
+    };
+  };
 }
 
 export interface FlyerImage {
@@ -95,4 +95,5 @@ export interface FlyersListParams {
   page?: number;
   limit?: number;
   channel?: FlyerChannel;
+  search?: string
 }

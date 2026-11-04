@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, Loader2, X } from 'lucide-react';
 import { TableSkeleton } from '@/components/table-skeleton';
 import { EmptyState } from '@/components/empty-state';
 import type { Pagination } from '@/types/common';
@@ -58,6 +58,11 @@ export function DataTable<T extends { _id?: string; id?: string | number }>({
 }: DataTableProps<T>) {
   const [localSearch, setLocalSearch] = React.useState(searchValue ?? '');
   const debounceRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    setLocalSearch(searchValue ?? '');
+  }, [searchValue]);
 
   const handleSearch = useCallback(
     (value: string) => {
@@ -69,6 +74,13 @@ export function DataTable<T extends { _id?: string; id?: string | number }>({
     },
     [onSearchChange]
   );
+
+  const handleClear = useCallback(() => {
+    setLocalSearch('');
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    onSearchChange?.('');
+    inputRef.current?.focus();
+  }, [onSearchChange]);
 
   React.useEffect(() => {
     return () => {
@@ -82,13 +94,31 @@ export function DataTable<T extends { _id?: string; id?: string | number }>({
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         {onSearchChange && (
           <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             <Input
+              ref={inputRef}
               placeholder={searchPlaceholder}
               value={localSearch}
               onChange={(e) => handleSearch(e.target.value)}
-              className="pl-9"
+              onKeyDown={(e) => {
+                if (e.key === 'Escape' && localSearch) {
+                  e.preventDefault();
+                  handleClear();
+                }
+              }}
+              className="pl-9 pr-9"
             />
+            {localSearch && (
+              <button
+                type="button"
+                onClick={handleClear}
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-md inline-flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                aria-label="Clear search"
+                title="Clear search"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
           </div>
         )}
         {toolbar && <div className="flex items-center gap-2">{toolbar}</div>}
