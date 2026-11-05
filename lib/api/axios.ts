@@ -4,7 +4,7 @@ import { logout } from '@/lib/slices/authSlice';
 
 export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.resvor.com/';
 
-// Create an Axios instance
+// Create an Axios instanc
 export const API = axios.create({
   baseURL: BASE_URL,
   timeout: 15000,
