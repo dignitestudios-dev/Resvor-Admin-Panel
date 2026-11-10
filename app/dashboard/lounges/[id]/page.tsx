@@ -215,7 +215,7 @@ export default function LoungeDetailPage({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <Button variant="outline" asChild>
             <Link href="/dashboard/lounges/create">
               <Plus className="h-4 w-4 mr-1" />
@@ -227,7 +227,7 @@ export default function LoungeDetailPage({
             <Pencil className="h-4 w-4 mr-2" />
             Edit Lounge
           </Button>
-        </div>
+        </div> */}
       </div>
 
       {/* PROFILE + LOUNGE DETAILS */}
