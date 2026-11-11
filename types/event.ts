@@ -68,3 +68,12 @@ export interface EventsListParams {
   endDate?: string;
   loungeId?: string;
 }
+
+export interface ExportEventsParams {
+  search?: string;
+  loungeId?: string;
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+  userId?: string;
+}

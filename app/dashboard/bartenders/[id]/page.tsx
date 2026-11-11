@@ -86,7 +86,7 @@ export default function BartenderDetailPage({
           </Link>
         </Button>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">{bartender.fullName}</h1>
+          <h1 className="text-2xl font-bold tracking-tight break-all">{bartender.fullName}</h1>
           <p className="text-muted-foreground text-sm">Workforce Details</p>
         </div>
       </div>
@@ -110,7 +110,7 @@ export default function BartenderDetailPage({
                 </span>
               </div>
               <div>
-                <p className="font-semibold text-base">{bartender.fullName}</p>
+                <p className="font-semibold text-base break-all">{bartender.fullName}</p>
                 {(() => {
                   const designation =
                     bartender.designation ||
@@ -151,7 +151,7 @@ export default function BartenderDetailPage({
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Mail className="h-4 w-4 shrink-0 text-foreground/75" />
-                <span className="truncate">{bartender.email}</span>
+                <div className="break-all">{bartender.email}</div>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Phone className="h-4 w-4 shrink-0 text-foreground/75" />

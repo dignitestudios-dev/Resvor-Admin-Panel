@@ -1,8 +1,8 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { getEvents, getEventById } from '@/lib/api/events.api';
-import type { EventsListParams } from '@/types/event';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { getEvents, getEventById, exportEventsCsv } from '@/lib/api/events.api';
+import type { EventsListParams, ExportEventsParams } from '@/types/event';
 
 export const EVENT_KEYS = {
   all: ['events'] as const,
@@ -24,5 +24,11 @@ export function useEvent(id: string) {
     queryFn: () => getEventById(id),
     enabled: !!id,
     staleTime: 1000 * 60 * 2,
+  });
+}
+
+export function useExportEvents() {
+  return useMutation({
+    mutationFn: (params?: ExportEventsParams) => exportEventsCsv(params),
   });
 }

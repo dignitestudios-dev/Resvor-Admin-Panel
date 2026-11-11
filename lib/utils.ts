@@ -43,3 +43,45 @@ export function stripHtml(html?: string): string {
       .trim() || '—'
   );
 }
+
+export function downloadBlob(blob: Blob, filename: string): void {
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setTimeout(() => window.URL.revokeObjectURL(url), 100);
+}
+
+export async function extractBlobErrorMessage(
+  error: unknown,
+  fallbackMessage: string = 'Export failed'
+): Promise<string> {
+  const err = error as {
+    response?: { data?: unknown; status?: number };
+    message?: string;
+  };
+  if (err?.response?.data instanceof Blob) {
+    try {
+      const text = await err.response.data.text();
+      const parsed = JSON.parse(text);
+      if (parsed?.message && typeof parsed.message === 'string') {
+        return parsed.message;
+      }
+    } catch {
+      // not a json string
+    }
+  } else if (
+    typeof err?.response?.data === 'object' &&
+    err?.response?.data !== null &&
+    'message' in err.response.data &&
+    typeof (err.response.data as { message: unknown }).message === 'string'
+  ) {
+    return (err.response.data as { message: string }).message;
+  } else if (err?.message) {
+    return err.message;
+  }
+  return fallbackMessage;
+}

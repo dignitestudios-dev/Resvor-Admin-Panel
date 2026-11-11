@@ -15,9 +15,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { CreditCard, Download, Calendar, ArrowRightLeft, ShieldCheck, Database } from 'lucide-react';
+import { CreditCard, Download, Calendar, ArrowRightLeft, ShieldCheck, Database, Loader2 } from 'lucide-react';
 import type { Payment } from '@/types/payment';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, downloadBlob, extractBlobErrorMessage } from '@/lib/utils';
+import { toast } from 'sonner';
 
 function formatDate(dateStr?: string) {
   if (!dateStr) return '—';
@@ -58,15 +59,18 @@ export default function PaymentsPage() {
   const handleExport = async () => {
     setIsExporting(true);
     try {
-      const downloadUrl = await exportPaymentsCsv();
-      const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.setAttribute('download', `payments_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const blob = await exportPaymentsCsv({
+        status: statusFilter !== 'all' ? statusFilter : undefined,
+        purpose: purposeFilter !== 'all' ? purposeFilter : undefined,
+        startDate: startDate || undefined,
+        endDate: endDate || undefined,
+      });
+      downloadBlob(blob, 'payments.csv');
+      toast.success('Payments exported successfully');
     } catch (err) {
       console.error('Failed to export payments CSV', err);
+      const msg = await extractBlobErrorMessage(err, 'Failed to export payments CSV');
+      toast.error(msg);
     } finally {
       setIsExporting(false);
     }
@@ -165,7 +169,11 @@ export default function PaymentsPage() {
           size="sm"
           className="w-full sm:w-auto shrink-0 shadow-sm"
         >
-          <Download className="mr-2 h-4 w-4" />
+          {isExporting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="mr-2 h-4 w-4" />
+          )}
           {isExporting ? 'Exporting...' : 'Export CSV'}
         </Button>
       </div>

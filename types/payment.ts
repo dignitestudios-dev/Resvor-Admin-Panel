@@ -80,3 +80,10 @@ export interface PaymentsListParams {
   startDate?: string;
   endDate?: string;
 }
+
+export interface ExportPaymentsParams {
+  status?: string;
+  purpose?: string;
+  startDate?: string;
+  endDate?: string;
+}

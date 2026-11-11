@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useEvents } from '@/hooks/use-events';
+import { exportEventsCsv } from '@/lib/api/events.api';
 import { DataTable, Column } from '@/components/data-table';
 import { StatusBadge } from '@/components/status-badge';
 import {
@@ -13,10 +14,11 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CalendarDays, Eye, Calendar } from 'lucide-react';
+import { CalendarDays, Eye, Calendar, Download, Loader2 } from 'lucide-react';
 import type { Event } from '@/types/event';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, downloadBlob, extractBlobErrorMessage } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 function formatDate(dateStr?: string) {
   if (!dateStr) return '—';
@@ -34,6 +36,7 @@ export default function EventsPage() {
   const [timeframeFilter, setTimeframeFilter] = useState('all');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [isExporting, setIsExporting] = useState(false);
   const router = useRouter();
 
   // Map legacy 'accepted' to valid backend status 'confirmed'
@@ -45,7 +48,6 @@ export default function EventsPage() {
         : undefined;
 
   // Resolve start date based on custom picker or upcoming timeframe
-  // Resolve start date
   const today = (() => {
     const date = new Date();
     const year = date.getFullYear();
@@ -72,6 +74,26 @@ export default function EventsPage() {
     search: search || undefined,
   });
 
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      const blob = await exportEventsCsv({
+        search: search.trim() || undefined,
+        status: resolvedStatus,
+        startDate: resolvedStartDate,
+        endDate: resolvedEndDate,
+      });
+      downloadBlob(blob, 'events.csv');
+      toast.success('Events exported successfully');
+    } catch (err) {
+      console.error('Failed to export events CSV', err);
+      const msg = await extractBlobErrorMessage(err, 'Failed to export events CSV');
+      toast.error(msg);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const columns: Column<Event>[] = [
     {
       key: 'guest',
@@ -88,9 +110,7 @@ export default function EventsPage() {
       header: 'Event Name',
       cell: (row) => (
         <div>
-          <p className="text-sm font-medium">{row.title
-            ?? '—'}</p>
-
+          <p className="text-sm font-medium">{row.title ?? '—'}</p>
         </div>
       ),
     },
@@ -162,13 +182,29 @@ export default function EventsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <CalendarDays className="h-6 w-6" /> Event Management
-        </h1>
-        <p className="text-muted-foreground">
-          View and manage all events across promoters & lounges
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <CalendarDays className="h-6 w-6" /> Event Management
+          </h1>
+          <p className="text-muted-foreground">
+            View and manage all events across promoters & lounges
+          </p>
+        </div>
+        <Button
+          onClick={handleExport}
+          disabled={isExporting}
+          variant="outline"
+          size="sm"
+          className="w-full sm:w-auto shrink-0 shadow-sm"
+        >
+          {isExporting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="mr-2 h-4 w-4" />
+          )}
+          {isExporting ? 'Exporting...' : 'Export CSV'}
+        </Button>
       </div>
 
       {/* Date Filters Row */}
@@ -227,7 +263,7 @@ export default function EventsPage() {
           setSearch(v);
           setPage(1);
         }}
-        searchPlaceholder="Search by guest name..."
+        searchPlaceholder="Search by event name..."
         onPageChange={setPage}
         onRowClick={(row) => router.push(`/dashboard/events/${row._id}`)}
         emptyTitle="No events found"
