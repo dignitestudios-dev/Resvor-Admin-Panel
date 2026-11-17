@@ -18,3 +18,8 @@ export const getLoungeById = async (id: string): Promise<LoungeDetail> => {
   const response = await API.get<ApiResponse<{ lounge: LoungeDetail }>>(`/admin/lounges/${id}`);
   return response.data.data.lounge;
 };
+
+export const deleteLounge = async (id: string): Promise<{ message: string }> => {
+  const response = await API.delete<{ message: string }>(`/admin/lounges/${id}`);
+  return response.data;
+};

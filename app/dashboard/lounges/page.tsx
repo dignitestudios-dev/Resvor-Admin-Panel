@@ -1,13 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { useLounges } from '@/hooks/use-lounges';
+import { useLounges, useDeleteLounge } from '@/hooks/use-lounges';
 import { DataTable, Column } from '@/components/data-table';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Building2, MapPin, Eye } from 'lucide-react';
+import { ConfirmDialog } from '@/components/confirm-dialog';
+import { Building2, MapPin, Eye, Trash2 } from 'lucide-react';
 import type { Lounge } from '@/types/lounge';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 function getInitials(name?: string) {
   if (!name) return '?';
@@ -26,6 +28,7 @@ function formatDate(dateStr?: string) {
 export default function LoungesPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState<Lounge | null>(null);
   const router = useRouter();
 
   const { data, isLoading, isError, error } = useLounges({
@@ -33,6 +36,28 @@ export default function LoungesPage() {
     limit: 10,
     search: search || undefined,
   });
+
+  const deleteMutation = useDeleteLounge();
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    try {
+      const res = await deleteMutation.mutateAsync(deleteTarget._id);
+      toast.success(res?.message || 'Lounge deleted successfully');
+    } catch (err: unknown) {
+      const errorObj = err as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
+      toast.error(
+        errorObj?.response?.data?.message ||
+          errorObj?.message ||
+          'Failed to delete lounge'
+      );
+    } finally {
+      setDeleteTarget(null);
+    }
+  };
 
   const columns: Column<Lounge>[] = [
     {
@@ -95,9 +120,9 @@ export default function LoungesPage() {
     {
       key: 'actions',
       header: '',
-      className: 'w-24 text-right',
+      className: 'w-28 text-right',
       cell: (row) => (
-        <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>
           <Button
             variant="outline"
             size="sm"
@@ -106,6 +131,15 @@ export default function LoungesPage() {
           >
             <Eye className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
             <span>View</span>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 px-2 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive shadow-2xs cursor-pointer"
+            onClick={() => setDeleteTarget(row)}
+            title="Delete lounge"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
           </Button>
         </div>
       ),
@@ -144,6 +178,20 @@ export default function LoungesPage() {
         onRowClick={(row) => router.push(`/dashboard/lounges/${row._id}`)}
         emptyTitle="No promoters & lounges found"
         emptyDescription="No promoters & lounges match your search criteria."
+      />
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
+        title="Delete Lounge"
+        description={`Are you sure you want to delete "${deleteTarget?.name || 'this lounge'}"? It will be removed from all active lounge listings. This action cannot be undone.`}
+        confirmLabel="Delete Lounge"
+        cancelLabel="Cancel"
+        onConfirm={handleDelete}
+        isLoading={deleteMutation.isPending}
+        variant="destructive"
       />
     </div>
   );
