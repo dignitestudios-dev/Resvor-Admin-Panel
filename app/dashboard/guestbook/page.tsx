@@ -417,7 +417,7 @@ export default function GuestbookPage() {
                     </p>
                   </div>
 
-                  <div className="rounded-xl bg-slate-50 dark:bg-slate-900/50 p-3 border col-span-2">
+                  <div className="rounded-xl   bg-slate-50 dark:bg-slate-900/50 p-3 border col-span-2">
                     <span className="text-xs text-muted-foreground flex items-center gap-1 mb-1">
                       <Calendar className="h-3.5 w-3.5 text-slate-500" />
                       Added to Guestbook
