@@ -4,6 +4,7 @@ import * as React from "react";
 import {
   LayoutDashboard,
   Building2,
+  BookUser,
   Users,
   Briefcase,
   CalendarCheck,
@@ -45,6 +46,11 @@ const data = {
           title: "Promoters & Lounges",
           url: "/dashboard/lounges",
           icon: Building2,
+        },
+        {
+          title: "Guestbook",
+          url: "/dashboard/guestbook",
+          icon: BookUser,
         },
         {
           title: "Users",

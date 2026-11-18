@@ -1,7 +1,7 @@
 import { API } from './axios';
 import type { ListApiResponse, NormalizedListResponse } from '@/types/common';
 import type { ApiResponse } from '@/types/common';
-import type { Payment, PaymentsListParams, PaymentAnalytics } from '@/types/payment';
+import type { Payment, PaymentsListParams, PaymentAnalytics, ExportPaymentsParams } from '@/types/payment';
 
 export const getPayments = async (
   params?: PaymentsListParams
@@ -20,12 +20,14 @@ export const getPaymentById = async (id: string): Promise<Payment> => {
   return response.data.data;
 };
 
-export const exportPaymentsCsv = async (): Promise<string> => {
+export const exportPaymentsCsv = async (
+  params?: ExportPaymentsParams
+): Promise<Blob> => {
   const response = await API.get('/admin/payments/export', {
+    params,
     responseType: 'blob',
   });
-  const blob = new Blob([response.data], { type: 'text/csv' });
-  return URL.createObjectURL(blob);
+  return new Blob([response.data], { type: 'text/csv' });
 };
 
 export const getPaymentAnalytics = async (

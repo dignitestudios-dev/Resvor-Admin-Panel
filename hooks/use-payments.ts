@@ -1,8 +1,8 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { getPayments, getPaymentById, getPaymentAnalytics } from '@/lib/api/payments.api';
-import type { PaymentsListParams } from '@/types/payment';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { getPayments, getPaymentById, getPaymentAnalytics, exportPaymentsCsv } from '@/lib/api/payments.api';
+import type { PaymentsListParams, ExportPaymentsParams } from '@/types/payment';
 
 export const PAYMENT_KEYS = {
   all: ['payments'] as const,
@@ -35,5 +35,11 @@ export function usePaymentAnalytics(interval: 'daily' | 'monthly') {
     queryKey: PAYMENT_KEYS.analytics(interval),
     queryFn: () => getPaymentAnalytics(interval),
     staleTime: 1000 * 60 * 10,
+  });
+}
+
+export function useExportPayments() {
+  return useMutation({
+    mutationFn: (params?: ExportPaymentsParams) => exportPaymentsCsv(params),
   });
 }

@@ -162,4 +162,16 @@
   .dark [data-slot="skeleton"] {
     background-color: rgba(255, 255, 255, 0.08) !important;
   }
+
+  /* Ensure selected text remains dark and clearly visible across all text fields */
+  input::selection,
+  textarea::selection {
+    background-color: rgba(1, 0, 103, 0.18);
+    color: oklch(0.147 0.004 49.25);
+  }
+  .dark input::selection,
+  .dark textarea::selection {
+    background-color: rgba(92, 89, 242, 0.35);
+    color: oklch(0.985 0.001 106.423);
+  }
 }

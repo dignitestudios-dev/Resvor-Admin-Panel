@@ -1,13 +1,15 @@
-
 'use client';
 
-import { use } from 'react';
+import { useState, use } from 'react';
 import Link from 'next/link';
-import { useLounge } from '@/hooks/use-lounges';
+import { useRouter } from 'next/navigation';
+import { useLounge, useDeleteLounge } from '@/hooks/use-lounges';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/empty-state';
+import { ConfirmDialog } from '@/components/confirm-dialog';
+import { toast } from 'sonner';
 import {
   Building2,
   ArrowLeft,
@@ -16,13 +18,8 @@ import {
   MapPin,
   Clock,
   UserRound,
-  Pencil,
-  Plus,
+  Trash2,
   Image as ImageIcon,
-  LayoutGrid,
-  DollarSign,
-  FileText,
-  CalendarDays,
 } from 'lucide-react';
 
 // Format date
@@ -35,14 +32,6 @@ function formatDate(dateStr?: string) {
     day: 'numeric',
     year: 'numeric',
   });
-}
-
-// Format currency
-function formatPrice(amount?: number, currency = 'usd') {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency.toUpperCase(),
-  }).format(amount ?? 0);
 }
 
 // Get initials
@@ -58,9 +47,7 @@ function getInitials(name?: string) {
     .toUpperCase();
 }
 
-// Media URL helper.
-// Supports URLs returned directly by the API.
-// For ID-only media, connect your existing media URL resolver.
+// Media URL helper
 function getImageSrc(media: any): string {
   if (!media) return '';
 
@@ -118,28 +105,33 @@ function SectionHeading({
   );
 }
 
-// Image placeholder
-function ImagePlaceholder({ label }: { label: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center gap-2 bg-slate-100 text-slate-400 rounded-xl min-h-48">
-      <ImageIcon className="h-10 w-10" />
-      <span className="text-sm">{label}</span>
-    </div>
-  );
-}
-
 export default function LoungeDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const router = useRouter();
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const deleteMutation = useDeleteLounge();
 
   const {
     data: lounge,
     isLoading,
     isError,
   } = useLounge(id);
+
+  const handleDelete = async () => {
+    try {
+      await deleteMutation.mutateAsync(id);
+      toast.success('Lounge deleted successfully');
+      setDeleteDialogOpen(false);
+      router.push('/dashboard/lounges');
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || 'Failed to delete lounge');
+    }
+  };
 
   if (isLoading) {
     return (
@@ -172,19 +164,10 @@ export default function LoungeDetailPage({
 
   const logoSrc = getImageSrc(lounge.logo);
 
-
-
-
-  // Available table counts are derived from total table counts
-  // only when the API does not provide separate availability data.
-
-
   return (
     <div className="space-y-6 pb-8">
-
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-
         <div className="flex items-center gap-3 min-w-0">
           <Button variant="outline" size="sm" asChild>
             <Link href="/dashboard/lounges">
@@ -215,24 +198,20 @@ export default function LoungeDetailPage({
           </div>
         </div>
 
-        {/* <div className="flex items-center gap-2">
-          <Button variant="outline" asChild>
-            <Link href="/dashboard/lounges/create">
-              <Plus className="h-4 w-4 mr-1" />
-              Add New Lounge
-            </Link>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="destructive"
+            onClick={() => setDeleteDialogOpen(true)}
+            className="flex items-center gap-2"
+          >
+            <Trash2 className="h-4 w-4" />
+            Delete Lounge
           </Button>
-
-          <Button className="bg-[#000066] hover:bg-[#000044]">
-            <Pencil className="h-4 w-4 mr-2" />
-            Edit Lounge
-          </Button>
-        </div> */}
+        </div>
       </div>
 
       {/* PROFILE + LOUNGE DETAILS */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-
         {/* USER PROFILE */}
         <Card className="rounded-2xl shadow-sm">
           <CardHeader>
@@ -243,7 +222,6 @@ export default function LoungeDetailPage({
           </CardHeader>
 
           <CardContent className="space-y-5">
-
             <div className="flex justify-center">
               <div className="h-28 w-28 rounded-full bg-slate-200 flex items-center justify-center text-2xl font-semibold text-slate-600">
                 {getInitials(ownerName)}
@@ -284,7 +262,6 @@ export default function LoungeDetailPage({
           </CardHeader>
 
           <CardContent className="space-y-4">
-
             <div className="flex items-center gap-4">
               <div className="h-20 w-20 shrink-0 rounded-full bg-slate-100 overflow-hidden flex items-center justify-center">
                 {logoSrc ? (
@@ -309,7 +286,6 @@ export default function LoungeDetailPage({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-
               <InfoBox
                 label="Business Email Address"
                 value={lounge.businessEmail}
@@ -353,14 +329,22 @@ export default function LoungeDetailPage({
                 label="Lounge Role"
                 value={lounge.role?.replace(/_/g, ' ')}
               />
-
             </div>
           </CardContent>
         </Card>
       </div>
 
-
-
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Delete Lounge"
+        description={`Are you sure you want to delete "${lounge.name}"? This lounge will be removed from all active listings and cleared from the manager's active lounges. This action cannot be undone.`}
+        confirmLabel="Delete Lounge"
+        variant="destructive"
+        isLoading={deleteMutation.isPending}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { getLounges, getLoungeById } from '@/lib/api/lounges.api';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getLounges, getLoungeById, deleteLounge } from '@/lib/api/lounges.api';
 import type { LoungesListParams } from '@/types/lounge';
 
 export const LOUNGE_KEYS = {
@@ -24,5 +24,15 @@ export function useLounge(id: string) {
     queryFn: () => getLoungeById(id),
     enabled: !!id,
     staleTime: 1000 * 60 * 2,
+  });
+}
+
+export function useDeleteLounge() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => deleteLounge(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: LOUNGE_KEYS.all });
+    },
   });
 }
