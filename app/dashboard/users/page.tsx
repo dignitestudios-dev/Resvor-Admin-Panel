@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useUsers, useSuspendUser, useActivateUser, useUser } from '@/hooks/use-users';
+import { useTableQuery } from '@/hooks/use-table-query';
 import { DataTable, Column } from '@/components/data-table';
 import { StatusBadge } from '@/components/status-badge';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { TableSkeleton } from '@/components/table-skeleton';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -97,10 +99,14 @@ function getUserType(user?: User | null): 'Lounge Manager' | 'User' {
   return 'User';
 }
 
-export default function UsersPage() {
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [suspendedFilter, setSuspendedFilter] = useState<string>('all');
+function UsersContent() {
+  const { query, setPage, setSearch, setFilter } = useTableQuery({
+    defaultValues: {
+      page: 1,
+      search: '',
+      status: 'all',
+    },
+  });
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -115,13 +121,13 @@ export default function UsersPage() {
   };
 
   const params = {
-    page,
+    page: query.page,
     limit: 10,
-    search: search || undefined,
+    search: query.search || undefined,
     isSuspended:
-      suspendedFilter === 'suspended'
+      query.status === 'suspended'
         ? true
-        : suspendedFilter === 'active'
+        : query.status === 'active'
           ? false
           : undefined,
   };
@@ -283,11 +289,8 @@ export default function UsersPage() {
         isLoading={isLoading}
         isError={isError}
         errorMessage={errorMsg}
-        searchValue={search}
-        onSearchChange={(v) => {
-          setSearch(v);
-          setPage(1);
-        }}
+        searchValue={query.search}
+        onSearchChange={setSearch}
         searchPlaceholder="Search users..."
         onPageChange={setPage}
         onRowClick={(row) => handleViewDetails(row._id)}
@@ -295,11 +298,8 @@ export default function UsersPage() {
         emptyDescription="No user accounts match your current filters."
         toolbar={
           <Select
-            value={suspendedFilter}
-            onValueChange={(v) => {
-              setSuspendedFilter(v);
-              setPage(1);
-            }}
+            value={query.status}
+            onValueChange={(v) => setFilter('status', v)}
           >
             <SelectTrigger className="w-36 h-9">
               <SelectValue />
@@ -610,5 +610,13 @@ function UserDetailsModal({
         )}
       </DialogContent>
     </Dialog>
+  );
+}
+
+export default function UsersPage() {
+  return (
+    <Suspense fallback={<TableSkeleton rows={8} columns={7} />}>
+      <UsersContent />
+    </Suspense>
   );
 }

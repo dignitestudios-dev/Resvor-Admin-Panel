@@ -1,9 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { useSidebarConfig } from "@/hooks/use-sidebar-config";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -39,7 +38,9 @@ export default function DashboardLayout({
               <div className="flex flex-1 flex-col">
                 <div className="@container/main flex flex-1 flex-col gap-2">
                   <div className="flex flex-col gap-4 p-4 md:gap-6 md:p-6">
-                    {children}
+                    <Suspense fallback={<div className="p-6">Loading...</div>}>
+                      {children}
+                    </Suspense>
                   </div>
                 </div>
               </div>
@@ -52,7 +53,9 @@ export default function DashboardLayout({
               <div className="flex flex-1 flex-col">
                 <div className="@container/main flex flex-1 flex-col gap-2">
                   <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                    {children}
+                    <Suspense fallback={<div className="p-6">Loading...</div>}>
+                      {children}
+                    </Suspense>
                   </div>
                 </div>
               </div>

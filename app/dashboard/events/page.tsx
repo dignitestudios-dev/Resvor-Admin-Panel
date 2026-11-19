@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useEvents } from '@/hooks/use-events';
 import { exportEventsCsv } from '@/lib/api/events.api';
+import { useTableQuery } from '@/hooks/use-table-query';
 import { DataTable, Column } from '@/components/data-table';
 import { StatusBadge } from '@/components/status-badge';
+import { TableSkeleton } from '@/components/table-skeleton';
 import {
   Select,
   SelectContent,
@@ -29,22 +31,27 @@ function formatDate(dateStr?: string) {
   });
 }
 
-export default function EventsPage() {
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [timeframeFilter, setTimeframeFilter] = useState('all');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+function EventsContent() {
+  const { query, setPage, setSearch, setFilter, updateQuery } = useTableQuery({
+    defaultValues: {
+      page: 1,
+      search: '',
+      status: 'all',
+      timeframe: 'all',
+      startDate: '',
+      endDate: '',
+    },
+  });
+
   const [isExporting, setIsExporting] = useState(false);
   const router = useRouter();
 
   // Map legacy 'accepted' to valid backend status 'confirmed'
   const resolvedStatus =
-    statusFilter === 'accepted'
+    query.status === 'accepted'
       ? 'confirmed'
-      : statusFilter !== 'all'
-        ? statusFilter
+      : query.status !== 'all'
+        ? query.status
         : undefined;
 
   // Resolve start date based on custom picker or upcoming timeframe
@@ -57,28 +64,28 @@ export default function EventsPage() {
     return `${year}-${month}-${day}`;
   })();
   const resolvedStartDate =
-    startDate ||
-    (timeframeFilter === 'upcoming' ? today : undefined);
+    query.startDate ||
+    (query.timeframe === 'upcoming' ? today : undefined);
 
   // Resolve end date
   const resolvedEndDate =
-    endDate ||
-    (timeframeFilter === 'past' ? today : undefined);
+    query.endDate ||
+    (query.timeframe === 'past' ? today : undefined);
 
   const { data, isLoading, isError, error } = useEvents({
-    page,
+    page: query.page,
     limit: 10,
     status: resolvedStatus,
     startDate: resolvedStartDate,
     endDate: resolvedEndDate,
-    search: search || undefined,
+    search: query.search || undefined,
   });
 
   const handleExport = async () => {
     setIsExporting(true);
     try {
       const blob = await exportEventsCsv({
-        search: search.trim() || undefined,
+        search: query.search.trim() || undefined,
         status: resolvedStatus,
         startDate: resolvedStartDate,
         endDate: resolvedEndDate,
@@ -215,33 +222,27 @@ export default function EventsPage() {
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Input
             type="date"
-            value={startDate}
+            value={query.startDate}
             onChange={(e) => {
-              setStartDate(e.target.value);
-              setTimeframeFilter('all');
-              setPage(1);
+              updateQuery({ startDate: e.target.value, timeframe: 'all' });
             }}
             className="h-9 text-xs w-full sm:w-36 bg-background"
           />
           <span className="text-muted-foreground text-xs">to</span>
           <Input
             type="date"
-            value={endDate}
+            value={query.endDate}
             onChange={(e) => {
-              setEndDate(e.target.value);
-              setTimeframeFilter('all');
-              setPage(1);
+              updateQuery({ endDate: e.target.value, timeframe: 'all' });
             }}
             className="h-9 text-xs w-full sm:w-36 bg-background"
           />
-          {(startDate || endDate) && (
+          {(query.startDate || query.endDate) && (
             <Button
               variant="ghost"
               size="sm"
               onClick={() => {
-                setStartDate('');
-                setEndDate('');
-                setPage(1);
+                updateQuery({ startDate: '', endDate: '' });
               }}
               className="text-xs h-9 px-2.5 text-destructive"
             >
@@ -258,11 +259,8 @@ export default function EventsPage() {
         isLoading={isLoading}
         isError={isError}
         errorMessage={errorMsg}
-        searchValue={search}
-        onSearchChange={(v) => {
-          setSearch(v);
-          setPage(1);
-        }}
+        searchValue={query.search}
+        onSearchChange={setSearch}
         searchPlaceholder="Search by event name..."
         onPageChange={setPage}
         onRowClick={(row) => router.push(`/dashboard/events/${row._id}`)}
@@ -271,12 +269,9 @@ export default function EventsPage() {
         toolbar={
           <div className="flex gap-2 flex-wrap">
             <Select
-              value={timeframeFilter}
+              value={query.timeframe}
               onValueChange={(v) => {
-                setTimeframeFilter(v);
-                setStartDate('');
-                setEndDate('');
-                setPage(1);
+                updateQuery({ timeframe: v, startDate: '', endDate: '' });
               }}
             >
               <SelectTrigger className="w-40 h-9">
@@ -290,10 +285,9 @@ export default function EventsPage() {
             </Select>
 
             <Select
-              value={statusFilter}
+              value={query.status}
               onValueChange={(v) => {
-                setStatusFilter(v);
-                setPage(1);
+                setFilter('status', v);
               }}
             >
               <SelectTrigger className="w-40 h-9">
@@ -313,5 +307,13 @@ export default function EventsPage() {
         }
       />
     </div>
+  );
+}
+
+export default function EventsPage() {
+  return (
+    <Suspense fallback={<TableSkeleton rows={8} columns={7} />}>
+      <EventsContent />
+    </Suspense>
   );
 }

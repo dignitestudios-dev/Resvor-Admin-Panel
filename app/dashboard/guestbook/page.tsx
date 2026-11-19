@@ -1,14 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import {
   useGuestbookEntries,
   useGuestbookSummary,
   useDeleteGuestbookEntry,
 } from '@/hooks/use-guestbook';
+import { useTableQuery } from '@/hooks/use-table-query';
 import { DataTable, Column } from '@/components/data-table';
 import { StatCard } from '@/components/stat-card';
 import { ConfirmDialog } from '@/components/confirm-dialog';
+import { TableSkeleton } from '@/components/table-skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -86,19 +88,23 @@ function getPhotoUrl(photo?: GuestbookEntry['photo']): string | undefined {
   return photo.location || photo.url || photo.secure_url;
 }
 
-export default function GuestbookPage() {
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [loungeFilter, setLoungeFilter] = useState('all');
+function GuestbookContent() {
+  const { query, setPage, setSearch, setFilter } = useTableQuery({
+    defaultValues: {
+      page: 1,
+      search: '',
+      loungeId: 'all',
+    },
+  });
 
   const [selectedEntry, setSelectedEntry] = useState<GuestbookEntry | null>(null);
   const [entryToDelete, setEntryToDelete] = useState<GuestbookEntry | null>(null);
 
   const { data, isLoading, isError, error } = useGuestbookEntries({
-    page,
+    page: query.page,
     limit: 10,
-    search: search || undefined,
-    loungeId: loungeFilter !== 'all' ? loungeFilter : undefined,
+    search: query.search || undefined,
+    loungeId: query.loungeId !== 'all' ? query.loungeId : undefined,
   });
 
   const { data: summary, isLoading: isSummaryLoading } = useGuestbookSummary();
@@ -311,27 +317,23 @@ export default function GuestbookPage() {
         isLoading={isLoading}
         isError={isError}
         errorMessage={errorMsg}
-        searchValue={search}
-        onSearchChange={(value) => {
-          setSearch(value);
-          setPage(1);
-        }}
+        searchValue={query.search}
+        onSearchChange={setSearch}
         searchPlaceholder="Search guests by name, email, or phone..."
         onPageChange={setPage}
         onRowClick={(row) => setSelectedEntry(row)}
         emptyTitle="No guestbook entries found"
         emptyDescription={
-          search || loungeFilter !== 'all'
+          query.search || query.loungeId !== 'all'
             ? 'Try adjusting your search query or lounge filter.'
             : 'No guestbook entries have been recorded yet.'
         }
         toolbar={
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <Select
-              value={loungeFilter}
+              value={query.loungeId}
               onValueChange={(val) => {
-                setLoungeFilter(val);
-                setPage(1);
+                setFilter('loungeId', val);
               }}
             >
               <SelectTrigger className="w-full sm:w-60 h-9 bg-card">
@@ -417,7 +419,7 @@ export default function GuestbookPage() {
                     </p>
                   </div>
 
-                  <div className="rounded-xl   bg-slate-50 dark:bg-slate-900/50 p-3 border col-span-2">
+                  <div className="rounded-xl bg-slate-50 dark:bg-slate-900/50 p-3 border col-span-2">
                     <span className="text-xs text-muted-foreground flex items-center gap-1 mb-1">
                       <Calendar className="h-3.5 w-3.5 text-slate-500" />
                       Added to Guestbook
@@ -495,3 +497,10 @@ export default function GuestbookPage() {
   );
 }
 
+export default function GuestbookPage() {
+  return (
+    <Suspense fallback={<TableSkeleton rows={8} columns={7} />}>
+      <GuestbookContent />
+    </Suspense>
+  );
+}

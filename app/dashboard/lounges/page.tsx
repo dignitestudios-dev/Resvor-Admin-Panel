@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useLounges, useDeleteLounge } from '@/hooks/use-lounges';
+import { useTableQuery } from '@/hooks/use-table-query';
 import { DataTable, Column } from '@/components/data-table';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/confirm-dialog';
+import { TableSkeleton } from '@/components/table-skeleton';
 import { Building2, MapPin, Eye, Trash2 } from 'lucide-react';
 import type { Lounge } from '@/types/lounge';
 import { useRouter } from 'next/navigation';
@@ -25,16 +27,21 @@ function formatDate(dateStr?: string) {
   });
 }
 
-export default function LoungesPage() {
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
+function LoungesContent() {
+  const { query, setPage, setSearch } = useTableQuery({
+    defaultValues: {
+      page: 1,
+      search: '',
+    },
+  });
+
   const [deleteTarget, setDeleteTarget] = useState<Lounge | null>(null);
   const router = useRouter();
 
   const { data, isLoading, isError, error } = useLounges({
-    page,
+    page: query.page,
     limit: 10,
-    search: search || undefined,
+    search: query.search || undefined,
   });
 
   const deleteMutation = useDeleteLounge();
@@ -168,11 +175,8 @@ export default function LoungesPage() {
         isLoading={isLoading}
         isError={isError}
         errorMessage={errorMsg}
-        searchValue={search}
-        onSearchChange={(v) => {
-          setSearch(v);
-          setPage(1);
-        }}
+        searchValue={query.search}
+        onSearchChange={setSearch}
         searchPlaceholder="Search promoters & lounges..."
         onPageChange={setPage}
         onRowClick={(row) => router.push(`/dashboard/lounges/${row._id}`)}
@@ -194,5 +198,13 @@ export default function LoungesPage() {
         variant="destructive"
       />
     </div>
+  );
+}
+
+export default function LoungesPage() {
+  return (
+    <Suspense fallback={<TableSkeleton rows={8} columns={6} />}>
+      <LoungesContent />
+    </Suspense>
   );
 }

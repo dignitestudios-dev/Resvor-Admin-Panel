@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { usePayments, usePayment } from '@/hooks/use-payments';
 import { exportPaymentsCsv } from '@/lib/api/payments.api';
+import { useTableQuery } from '@/hooks/use-table-query';
 import { DataTable, Column } from '@/components/data-table';
 import { StatusBadge } from '@/components/status-badge';
+import { TableSkeleton } from '@/components/table-skeleton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -15,7 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { CreditCard, Download, Calendar, ArrowRightLeft, ShieldCheck, Database, Loader2 } from 'lucide-react';
+import { CreditCard, Download, Calendar, ArrowRightLeft, Database, Loader2 } from 'lucide-react';
 import type { Payment } from '@/types/payment';
 import { formatCurrency, downloadBlob, extractBlobErrorMessage } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -34,36 +36,40 @@ function getInitials(name?: string) {
   return name.split(' ').slice(0, 2).map((n) => n[0]).join('').toUpperCase();
 }
 
-export default function PaymentsPage() {
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [purposeFilter, setPurposeFilter] = useState('all');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [isExporting, setIsExporting] = useState(false);
+function PaymentsContent() {
+  const { query, setPage, setSearch, setFilter, updateQuery } = useTableQuery({
+    defaultValues: {
+      page: 1,
+      search: '',
+      status: 'all',
+      purpose: 'all',
+      startDate: '',
+      endDate: '',
+    },
+  });
 
+  const [isExporting, setIsExporting] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsTxId, setDetailsTxId] = useState<string | null>(null);
 
   const { data, isLoading, isError, error } = usePayments({
-    page,
+    page: query.page,
     limit: 10,
-    status: statusFilter !== 'all' ? statusFilter : undefined,
-    purpose: purposeFilter !== 'all' ? purposeFilter : undefined,
-    search: search || undefined,
-    startDate: startDate || undefined,
-    endDate: endDate || undefined,
+    status: query.status !== 'all' ? query.status : undefined,
+    purpose: query.purpose !== 'all' ? query.purpose : undefined,
+    search: query.search || undefined,
+    startDate: query.startDate || undefined,
+    endDate: query.endDate || undefined,
   });
 
   const handleExport = async () => {
     setIsExporting(true);
     try {
       const blob = await exportPaymentsCsv({
-        status: statusFilter !== 'all' ? statusFilter : undefined,
-        purpose: purposeFilter !== 'all' ? purposeFilter : undefined,
-        startDate: startDate || undefined,
-        endDate: endDate || undefined,
+        status: query.status !== 'all' ? query.status : undefined,
+        purpose: query.purpose !== 'all' ? query.purpose : undefined,
+        startDate: query.startDate || undefined,
+        endDate: query.endDate || undefined,
       });
       downloadBlob(blob, 'payments.csv');
       toast.success('Payments exported successfully');
@@ -186,31 +192,27 @@ export default function PaymentsPage() {
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Input
             type="date"
-            value={startDate}
+            value={query.startDate}
             onChange={(e) => {
-              setStartDate(e.target.value);
-              setPage(1);
+              setFilter('startDate', e.target.value);
             }}
             className="h-9 text-xs w-full sm:w-36 bg-background"
           />
           <span className="text-muted-foreground text-xs">to</span>
           <Input
             type="date"
-            value={endDate}
+            value={query.endDate}
             onChange={(e) => {
-              setEndDate(e.target.value);
-              setPage(1);
+              setFilter('endDate', e.target.value);
             }}
             className="h-9 text-xs w-full sm:w-36 bg-background"
           />
-          {(startDate || endDate) && (
+          {(query.startDate || query.endDate) && (
             <Button
               variant="ghost"
               size="sm"
               onClick={() => {
-                setStartDate('');
-                setEndDate('');
-                setPage(1);
+                updateQuery({ startDate: '', endDate: '' });
               }}
               className="text-xs h-9 px-2.5 text-destructive"
             >
@@ -227,11 +229,8 @@ export default function PaymentsPage() {
         isLoading={isLoading}
         isError={isError}
         errorMessage={errorMsg}
-        searchValue={search}
-        onSearchChange={(v) => {
-          setSearch(v);
-          setPage(1);
-        }}
+        searchValue={query.search}
+        onSearchChange={setSearch}
         searchPlaceholder="Search payments..."
         onPageChange={setPage}
         onRowClick={(row) => handleViewDetails(row._id)}
@@ -240,10 +239,9 @@ export default function PaymentsPage() {
         toolbar={
           <div className="flex gap-2">
             <Select
-              value={statusFilter}
+              value={query.status}
               onValueChange={(v) => {
-                setStatusFilter(v);
-                setPage(1);
+                setFilter('status', v);
               }}
             >
               <SelectTrigger className="w-36 sm:w-40 h-9">
@@ -261,10 +259,9 @@ export default function PaymentsPage() {
             </Select>
 
             <Select
-              value={purposeFilter}
+              value={query.purpose}
               onValueChange={(v) => {
-                setPurposeFilter(v);
-                setPage(1);
+                setFilter('purpose', v);
               }}
             >
               <SelectTrigger className="w-44 sm:w-48 h-9">
@@ -421,5 +418,13 @@ function PaymentDetailsModal({
         )}
       </DialogContent>
     </Dialog>
+  );
+}
+
+export default function PaymentsPage() {
+  return (
+    <Suspense fallback={<TableSkeleton rows={8} columns={7} />}>
+      <PaymentsContent />
+    </Suspense>
   );
 }

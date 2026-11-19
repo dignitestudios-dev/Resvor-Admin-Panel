@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Search, ChevronLeft, ChevronRight, Loader2, X } from 'lucide-react';
 import { TableSkeleton } from '@/components/table-skeleton';
 import { EmptyState } from '@/components/empty-state';
+import { cn } from '@/lib/utils';
 import type { Pagination } from '@/types/common';
 
 export interface Column<T> {
@@ -38,6 +39,35 @@ interface DataTableProps<T> {
   toolbar?: React.ReactNode;
   emptyTitle?: string;
   emptyDescription?: string;
+}
+
+function getPageNumbers(currentPage: number, totalPages: number): (number | 'ellipsis')[] {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+  if (currentPage <= 4) {
+    return [1, 2, 3, 4, 5, 'ellipsis', totalPages];
+  }
+  if (currentPage >= totalPages - 3) {
+    return [
+      1,
+      'ellipsis',
+      totalPages - 4,
+      totalPages - 3,
+      totalPages - 2,
+      totalPages - 1,
+      totalPages,
+    ];
+  }
+  return [
+    1,
+    'ellipsis',
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    'ellipsis',
+    totalPages,
+  ];
 }
 
 export function DataTable<T extends { _id?: string; id?: string | number }>({
@@ -87,6 +117,22 @@ export function DataTable<T extends { _id?: string; id?: string | number }>({
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
   }, []);
+
+  // Records range calculations
+  const totalItems = pagination?.totalItems ?? data.length;
+  const currentPage = pagination?.currentPage ?? 1;
+  const itemsPerPage = pagination?.itemsPerPage ?? (data.length || 10);
+  const totalPages = pagination?.totalPages ?? Math.max(1, Math.ceil(totalItems / itemsPerPage));
+
+  const pageNumbers = React.useMemo(() => {
+    return getPageNumbers(currentPage, totalPages);
+  }, [currentPage, totalPages]);
+
+  const startRecord = totalItems === 0 || data.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+  const endRecord =
+    totalItems === 0 || data.length === 0
+      ? 0
+      : Math.min((currentPage - 1) * itemsPerPage + data.length, totalItems);
 
   return (
     <div className="space-y-4">
@@ -190,31 +236,83 @@ export function DataTable<T extends { _id?: string; id?: string | number }>({
         </div>
       </div>
 
-      {/* Pagination */}
-      {pagination && pagination.totalPages > 1 && (
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>
-            Page {pagination.currentPage} of {pagination.totalPages} &bull;{' '}
-            {pagination.totalItems} total records
-          </span>
-          <div className="flex items-center gap-1">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onPageChange?.(pagination.currentPage - 1)}
-              disabled={pagination.currentPage <= 1}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onPageChange?.(pagination.currentPage + 1)}
-              disabled={pagination.currentPage >= pagination.totalPages}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
+      {/* Pagination & Total Count Footer */}
+      {(pagination || data.length > 0 || isLoading) && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted-foreground pt-2">
+          <div className="text-sm font-medium text-muted-foreground order-2 sm:order-1">
+            {isLoading ? (
+              <span className="flex items-center gap-1.5">
+                <Loader2 className="h-3.5 w-3.5 animate-spin" /> Loading records...
+              </span>
+            ) : totalItems === 0 || data.length === 0 ? (
+              <span>Showing 0 of 0 records</span>
+            ) : (
+              <span>
+                Showing <strong className="text-foreground">{startRecord}</strong>–<strong className="text-foreground">{endRecord}</strong> of{' '}
+                <strong className="text-foreground">{totalItems}</strong> records
+              </span>
+            )}
           </div>
+
+          {pagination && pagination.totalPages > 1 && (
+            <div className="flex items-center gap-1 order-1 sm:order-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 px-2 sm:px-2.5 text-xs font-medium cursor-pointer"
+                onClick={() => onPageChange?.(currentPage - 1)}
+                disabled={currentPage <= 1 || isLoading}
+                aria-label="Previous page"
+              >
+                <ChevronLeft className="h-4 w-4 sm:mr-1" />
+                <span className="hidden sm:inline">Previous</span>
+              </Button>
+
+              <div className="hidden sm:flex items-center gap-1">
+                {pageNumbers.map((p, idx) =>
+                  p === 'ellipsis' ? (
+                    <span
+                      key={`ellipsis-${idx}`}
+                      className="px-2 text-xs text-muted-foreground select-none"
+                    >
+                      …
+                    </span>
+                  ) : (
+                    <Button
+                      key={p}
+                      size="sm"
+                      variant={p === currentPage ? 'default' : 'outline'}
+                      className={cn(
+                        'h-8 min-w-8 px-2.5 text-xs font-medium cursor-pointer',
+                        p === currentPage &&
+                          'bg-[#000066] text-white hover:bg-[#000044] font-semibold'
+                      )}
+                      onClick={() => onPageChange?.(p)}
+                      disabled={isLoading}
+                    >
+                      {p}
+                    </Button>
+                  )
+                )}
+              </div>
+
+              <span className="sm:hidden text-xs text-muted-foreground px-2">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 px-2 sm:px-2.5 text-xs font-medium cursor-pointer"
+                onClick={() => onPageChange?.(currentPage + 1)}
+                disabled={currentPage >= totalPages || isLoading}
+                aria-label="Next page"
+              >
+                <span className="hidden sm:inline">Next</span>
+                <ChevronRight className="h-4 w-4 sm:ml-1" />
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>
