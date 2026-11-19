@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useBartenders, useSuspendBartender, useActivateBartender } from '@/hooks/use-bartenders';
+import { useTableQuery } from '@/hooks/use-table-query';
 import { DataTable, Column } from '@/components/data-table';
 import { StatusBadge } from '@/components/status-badge';
 import { ConfirmDialog } from '@/components/confirm-dialog';
+import { TableSkeleton } from '@/components/table-skeleton';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -38,24 +40,28 @@ function formatDate(dateStr?: string) {
   });
 }
 
-export default function BartendersPage() {
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [suspendedFilter, setSuspendedFilter] = useState<string>('all');
-  const router = useRouter();
+function BartendersContent() {
+  const { query, setPage, setSearch, setFilter } = useTableQuery({
+    defaultValues: {
+      page: 1,
+      search: '',
+      status: 'all',
+    },
+  });
 
+  const router = useRouter();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedBartender, setSelectedBartender] = useState<Bartender | null>(null);
   const [action, setAction] = useState<'suspend' | 'activate'>('suspend');
 
   const { data, isLoading, isError, error } = useBartenders({
-    page,
+    page: query.page,
     limit: 10,
-    search: search || undefined,
+    search: query.search || undefined,
     isSuspended:
-      suspendedFilter === 'suspended'
+      query.status === 'suspended'
         ? true
-        : suspendedFilter === 'active'
+        : query.status === 'active'
           ? false
           : undefined,
   });
@@ -142,13 +148,6 @@ export default function BartendersPage() {
         <span className="text-sm">{row.loungeId?.name ?? '—'}</span>
       ),
     },
-    // {
-    //   key: 'verified',
-    //   header: 'Verified',
-    //   cell: (row) => (
-    //     <StatusBadge status={row.isEmailVerified ? 'verified' : 'unverified'} />
-    //   ),
-    // },
     {
       key: 'status',
       header: 'Status',
@@ -233,11 +232,8 @@ export default function BartendersPage() {
         isLoading={isLoading}
         isError={isError}
         errorMessage={errorMsg}
-        searchValue={search}
-        onSearchChange={(v) => {
-          setSearch(v);
-          setPage(1);
-        }}
+        searchValue={query.search}
+        onSearchChange={setSearch}
         searchPlaceholder="Search workforce..."
         onPageChange={setPage}
         onRowClick={(row) => router.push(`/dashboard/bartenders/${row._id}`)}
@@ -245,11 +241,8 @@ export default function BartendersPage() {
         emptyDescription="No workforce accounts match your current filters."
         toolbar={
           <Select
-            value={suspendedFilter}
-            onValueChange={(v) => {
-              setSuspendedFilter(v);
-              setPage(1);
-            }}
+            value={query.status}
+            onValueChange={(v) => setFilter('status', v)}
           >
             <SelectTrigger className="w-36 h-9">
               <SelectValue placeholder="Status" />
@@ -278,5 +271,13 @@ export default function BartendersPage() {
         isLoading={isActionLoading}
       />
     </div>
+  );
+}
+
+export default function BartendersPage() {
+  return (
+    <Suspense fallback={<TableSkeleton rows={8} columns={6} />}>
+      <BartendersContent />
+    </Suspense>
   );
 }

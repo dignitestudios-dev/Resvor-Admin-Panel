@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense } from 'react';
 import { useFlyers, useFlyerAnalytics } from '@/hooks/use-flyers';
+import { useTableQuery } from '@/hooks/use-table-query';
 import { DataTable, Column } from '@/components/data-table';
-import { StatusBadge } from '@/components/status-badge';
 import { StatCard } from '@/components/stat-card';
+import { TableSkeleton } from '@/components/table-skeleton';
 import {
   Select,
   SelectContent,
@@ -31,16 +32,22 @@ function formatDate(dateStr?: string) {
   });
 }
 
-export default function FlyersPage() {
-  const [page, setPage] = useState(1);
-  const [channelFilter, setChannelFilter] = useState('all');
+function FlyersContent() {
+  const { query, setPage, setSearch, setFilter } = useTableQuery({
+    defaultValues: {
+      page: 1,
+      search: '',
+      channel: 'all',
+    },
+  });
+
   const router = useRouter();
-  const [search, setSearch] = useState('');
+
   const { data, isLoading, isError, error } = useFlyers({
-    page,
+    page: query.page,
     limit: 10,
-    search: search || undefined,
-    channel: channelFilter !== 'all' ? (channelFilter as 'email' | 'sms') : undefined,
+    search: query.search || undefined,
+    channel: query.channel !== 'all' ? (query.channel as 'email' | 'sms') : undefined,
   });
 
   const { data: analytics, isLoading: isAnalyticsLoading } = useFlyerAnalytics();
@@ -229,11 +236,8 @@ export default function FlyersPage() {
         isLoading={isLoading}
         isError={isError}
         errorMessage={errorMsg}
-        searchValue={search}
-        onSearchChange={(value) => {
-          setSearch(value);
-          setPage(1);
-        }}
+        searchValue={query.search}
+        onSearchChange={setSearch}
         searchPlaceholder="Search flyer campaigns..."
         onPageChange={setPage}
         onRowClick={(row) => router.push(`/dashboard/flyers/${row._id}`)}
@@ -241,10 +245,9 @@ export default function FlyersPage() {
         emptyDescription="No flyer campaigns match your current filters."
         toolbar={
           <Select
-            value={channelFilter}
+            value={query.channel}
             onValueChange={(v) => {
-              setChannelFilter(v);
-              setPage(1);
+              setFilter('channel', v);
             }}
           >
             <SelectTrigger className="w-36 h-9">
@@ -259,5 +262,13 @@ export default function FlyersPage() {
         }
       />
     </div>
+  );
+}
+
+export default function FlyersPage() {
+  return (
+    <Suspense fallback={<TableSkeleton rows={8} columns={6} />}>
+      <FlyersContent />
+    </Suspense>
   );
 }

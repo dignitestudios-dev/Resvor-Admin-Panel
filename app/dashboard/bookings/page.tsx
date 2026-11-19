@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useBookings } from '@/hooks/use-bookings';
 import { exportBookingsCsv } from '@/lib/api/bookings.api';
+import { useTableQuery } from '@/hooks/use-table-query';
 import { DataTable, Column } from '@/components/data-table';
 import { StatusBadge } from '@/components/status-badge';
+import { TableSkeleton } from '@/components/table-skeleton';
 import { formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,22 +42,27 @@ function formatTime(isoString?: string) {
   }
 }
 
-export default function BookingsPage() {
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+function BookingsContent() {
+  const { query, setPage, setSearch, setFilter, updateQuery } = useTableQuery({
+    defaultValues: {
+      page: 1,
+      search: '',
+      status: 'all',
+      startDate: '',
+      endDate: '',
+    },
+  });
+
   const [isExporting, setIsExporting] = useState(false);
   const router = useRouter();
 
   const { data, isLoading, isError, error } = useBookings({
-    page,
+    page: query.page,
     limit: 10,
-    status: statusFilter !== 'all' ? statusFilter : undefined,
-    search: search || undefined,
-    startDate: startDate || undefined,
-    endDate: endDate || undefined,
+    status: query.status !== 'all' ? query.status : undefined,
+    search: query.search || undefined,
+    startDate: query.startDate || undefined,
+    endDate: query.endDate || undefined,
   });
 
   const handleExport = async () => {
@@ -121,8 +128,7 @@ export default function BookingsPage() {
       header: 'Amount Paid',
       cell: (row) => (
         <span className="text-sm font-semibold">
-                {formatCurrency(Number(row.amountPaid || 0) / 100, row.currency)}
-
+          {formatCurrency(Number(row.amountPaid || 0) / 100, row.currency)}
         </span>
       ),
     },
@@ -186,31 +192,27 @@ export default function BookingsPage() {
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Input
             type="date"
-            value={startDate}
+            value={query.startDate}
             onChange={(e) => {
-              setStartDate(e.target.value);
-              setPage(1);
+              setFilter('startDate', e.target.value);
             }}
             className="h-9 text-xs w-full sm:w-36 bg-background"
           />
           <span className="text-muted-foreground text-xs">to</span>
           <Input
             type="date"
-            value={endDate}
+            value={query.endDate}
             onChange={(e) => {
-              setEndDate(e.target.value);
-              setPage(1);
+              setFilter('endDate', e.target.value);
             }}
             className="h-9 text-xs w-full sm:w-36 bg-background"
           />
-          {(startDate || endDate) && (
+          {(query.startDate || query.endDate) && (
             <Button
               variant="ghost"
               size="sm"
               onClick={() => {
-                setStartDate('');
-                setEndDate('');
-                setPage(1);
+                updateQuery({ startDate: '', endDate: '' });
               }}
               className="text-xs h-9 px-2.5 text-destructive"
             >
@@ -227,11 +229,8 @@ export default function BookingsPage() {
         isLoading={isLoading}
         isError={isError}
         errorMessage={errorMsg}
-        searchValue={search}
-        onSearchChange={(v) => {
-          setSearch(v);
-          setPage(1);
-        }}
+        searchValue={query.search}
+        onSearchChange={setSearch}
         searchPlaceholder="Search bookings..."
         onPageChange={setPage}
         onRowClick={(row) => router.push(`/dashboard/bookings/${row._id}`)}
@@ -239,10 +238,9 @@ export default function BookingsPage() {
         emptyDescription="No reservations match your current filters."
         toolbar={
           <Select
-            value={statusFilter}
+            value={query.status}
             onValueChange={(v) => {
-              setStatusFilter(v);
-              setPage(1);
+              setFilter('status', v);
             }}
           >
             <SelectTrigger className="w-44 h-9">
@@ -264,5 +262,13 @@ export default function BookingsPage() {
         }
       />
     </div>
+  );
+}
+
+export default function BookingsPage() {
+  return (
+    <Suspense fallback={<TableSkeleton rows={8} columns={7} />}>
+      <BookingsContent />
+    </Suspense>
   );
 }
